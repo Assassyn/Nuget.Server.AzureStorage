@@ -7,7 +7,7 @@ using NuGet.Server.DataServices;
 using NuGet.Server.Infrastructure;
 using RouteMagic;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(AraneaIt.NugetServer.NuGetRoutes), "Start")]
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(AraneaIt.NugetServer.NuGetRoutes), "Start")]
 
 namespace AraneaIt.NugetServer {
     public static class NuGetRoutes {
