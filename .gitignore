@@ -1,0 +1,7 @@
+/*.suo
+
+/Sources/Nuget.Server.TestInstance/bin
+/Sources/Nuget.Server.TestInstance/obj
+
+/Sources/Nuget.Server.AzureStorage/bin
+/Sources/Nuget.Server.AzureStorage/obj
