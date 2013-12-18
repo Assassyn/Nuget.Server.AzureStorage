@@ -12,7 +12,6 @@ namespace AraneaIt.NugetServer
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            Nuget.Server.AzureStorage.Bootstraper.SetUp();
         }
 
         protected void Session_Start(object sender, EventArgs e)

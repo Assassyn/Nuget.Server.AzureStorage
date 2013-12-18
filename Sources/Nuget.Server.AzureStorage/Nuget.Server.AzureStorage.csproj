@@ -93,10 +93,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureFileSystem.cs" />
+    <Compile Include="AzurePathResolver.cs" />
     <Compile Include="BlobStorage.cs" />
     <Compile Include="Bootstraper.cs" />
+    <Compile Include="PackageMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerPackageRepository.cs" />
+    <Compile Include="AzureServerPackageRepository .cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

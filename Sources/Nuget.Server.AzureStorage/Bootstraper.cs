@@ -6,7 +6,7 @@
     {
         public static void SetUp()
         {
-            NinjectBootstrapper.Kernel.Rebind<IServerPackageRepository>().To<ServerPackageRepository>();
+            NinjectBootstrapper.Kernel.Rebind<IServerPackageRepository>().To<AzureServerPackageRepository>();
         }
     }
 }
