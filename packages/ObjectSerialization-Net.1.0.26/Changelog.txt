@@ -1,0 +1,143 @@
+ObjectSerialization
+===========================================
+
+Version 1.0.26
+-------------------------------------------
++ ensured proper and constant order of registered types with TypeInfoRepository.RegisterPredefinedUsingSerializableFrom
+
+Version 1.0.25
+-------------------------------------------
++ added RegisterPredefinedUsingSerializableFrom to TypeInfoRepository
+
+Version 1.0.24
+-------------------------------------------
++ created NuGet package
+
+Version 1.0.23
+-------------------------------------------
++ added support for serialization of classes without parameterless constructor
++ updated Measurement class to omit 1% of lovest and highest values
++ renamed test cases for performance monitor
++ added text result presenter for performance results
++ extended performance tests
++ added tests for Newsoft BSON and DataContractSerializer
++ reorganized performance tests and improved time measurement to exclude stream/writers creation
+
+Version 1.0.22
+-------------------------------------------
++ modified TypeMembersSerializerBuilder to throw SerializationException when exception occurs during serializer construction
++ renamed unit tests 
+
+Version 1.0.21
+-------------------------------------------
++ optimized sealed class serialization
++ optimized interface, abstract and object member type serialization
++ added performance tests for sealed classes
+
+Version 1.0.20
+-------------------------------------------
++ added NonSerializedBackendAttribute allow to mark backend field of automatic properties to not be serialized (if automatic virtual property is overriden with another automatic property implementation, both has to be marked with NonSerializedBackendAttribute if none of them should be serialized. Otherwise only the marked one will not be serialized.)
++ extended Measurement class to dump also total value on ToString() method
+
+Version 1.0.19
+-------------------------------------------
++ modified class serializer to serialize fields (public/protected/private) instead of public properties and public fields
++ merged Class/StructMembersSerializerBuilder into TypeMembersSerializerBuilder
+
+Version 1.0.18
+-------------------------------------------
++ added support to omit class/struct field serialization if it is marked with NonSerialized attribute
++ disallowed class/struct serialization if contains readonly fields not marked with NonSerialized attribute (an SerializationException suggesting addition of NonSerialized attribute removal of readonly modifier is thrown)
++ modified Class/Struct/TypeSerializerBuilder to generate serialization code on first SerializeFn/DeserializeFn property acces instead of on type loading to avoid TypeInitializationExceptions.
++ modified readonly field serialization exception to be more specified about type.
+
+Version 1.0.17
+-------------------------------------------
++ modified class serializer to serialize public properties and fields that are not static and not readonly
++ modified struct serializer to omit readonly fields (Expression.Assign() method does not allow to overwrite readonly fields)
+
+Version 1.0.16
+-------------------------------------------
++ introduced TypeInfoRepository class with ability to register type (to decrease size of serialized data)
+
+Version 1.0.15
+-------------------------------------------
++ extended IObjectSerializer interface to support streams
++ added performance test for huge object
++ refactored adapter classes in performance tests
++ added tests for empty struct / class serialization
+
+Version 1.0.14
+-------------------------------------------
++ simplified IObjectSerializer interface
+
+Version 1.0.13
+-------------------------------------------
++ added ProtoBuf-net serializer for performance comparison
++ annotated TestObjects with ProtoBuf attributes
++ refactored PerformanceMonitor and added HtmlResultPresenter
++ updated internal comments for serializers
++ modified TypeSerializerBuilder to not use additional variable for deserialized object
+
+Version 1.0.12
+-------------------------------------------
++ optimized TypeSerializerFactory to cache type information
+
+Version 1.0.11
+-------------------------------------------
++ optimized struct and class members serialization
++ added more performance monitor cases
+
+Version 1.0.10
+-------------------------------------------
++ added serialization performance project to compare serialization times/serialized data size for various object graphs and serializer implementations
++ optimized GenericSerializerFactory to cache loaded types
++ optimized serialization by reduced objects casting into one helper variable
+
+Version 1.0.9
+-------------------------------------------
++ added support for collection serialization (any implementing ICollection)
+
+Version 1.0.8
+-------------------------------------------
++ added support for struct serialization
++ modified BuildContext to display generated serialization code for classes on console if project is compiled in DEBUG mode
+
+Version 1.0.7
+-------------------------------------------
++ added support for null string serialization
+
+Version 1.0.6
+-------------------------------------------
++ added support for array serialization at root and class member level
+
+Version 1.0.5
+-------------------------------------------
++ added support for direct serialization of built-in primitive types, strings and null objects on root level
+
+Version 1.0.4
+-------------------------------------------
++ merged ClassTypeSerializer with PolymorphicClassTypeSerializer
++ added support for serialization of derived classes (property no longer have to be object, interface or abstract class type to trigger it)
+
+Version 1.0.3
+-------------------------------------------
++ added support for nested polymorphic classes serialization
++ added verification of serialized object
++ added test for array serialization
++ extracted serialization logic into several classes
++ finished serialization classes refactoring
+
+Version 1.0.2
+-------------------------------------------
++ added support for nested classes serialization
++ added BSD 2-Clause License file
+
+Version 1.0.1
+-------------------------------------------
++ added support for built-in types serialization
+
+Version 1.0.0
+-------------------------------------------
++ created project structure
++ implemented basic string property serializers

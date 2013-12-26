@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <!--
+            Determines if an Api Key is required to push\delete packages from the server. 
+    -->
+    <add key="requireApiKey" value="true" />
+    <!-- 
+            Set the value here to allow people to push/delete packages from the server.
+            NOTE: This is a shared key (password) for all users.
+    -->
+    <add key="apiKey" value="" />
+    <!--
+            Change the path to the packages folder. Default is ~/Packages.
+            This can be a virtual or physical path.
+        -->
+    <add key="packagesPath" value="" />
+  </appSettings>
+  <elmah>
+    <errorLog type="Elmah.XmlFileErrorLog, Elmah" logPath="~/App_Data" />
+  </elmah>
+  <system.web>
+    <compilation debug="true" targetFramework="4.0" />
+    <httpRuntime maxRequestLength="31457280" />
+  </system.web>
+  <system.serviceModel>
+    <serviceHostingEnvironment aspNetCompatibilityEnabled="true" />
+  </system.serviceModel>
+  <system.webServer>
+    <staticContent>
+      <mimeMap fileExtension=".nupkg" mimeType="application/zip" />
+    </staticContent>
+    <modules runAllManagedModulesForAllRequests="true" />
+  </system.webServer>
+</configuration>

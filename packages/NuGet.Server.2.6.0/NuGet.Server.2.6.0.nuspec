@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NuGet.Server</id>
+    <version>2.6.0</version>
+    <authors>Outercurve Foundation</authors>
+    <owners>Outercurve Foundation</owners>
+    <licenseUrl>http://nuget.codeplex.com/license</licenseUrl>
+    <projectUrl>http://nuget.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Web Application used to host a read-only NuGet feed</description>
+    <copyright>Copyright 2013 Microsoft. NuGet is made possible by the Outercurve Foundation’s open source project.</copyright>
+    <dependencies>
+      <dependency id="NuGet.Core" version="2.6.0" />
+      <dependency id="elmah" version="1.2.2" />
+      <dependency id="Ninject" version="3.0.0.15" />
+      <dependency id="RouteMagic" version="1.2" />
+      <dependency id="WebActivator" version="1.5" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.ServiceModel" targetFramework="" />
+      <frameworkAssembly assemblyName="System.ServiceModel.Web" targetFramework="" />
+      <frameworkAssembly assemblyName="System.ServiceModel.Activation" targetFramework="" />
+      <frameworkAssembly assemblyName="System.Data.Services" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

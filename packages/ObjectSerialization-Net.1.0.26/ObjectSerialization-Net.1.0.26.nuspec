@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>ObjectSerialization-Net</id>
+    <version>1.0.26</version>
+    <title>Object Serialization Net</title>
+    <authors>Wojciech Kotlarski</authors>
+    <owners>Wojciech Kotlarski</owners>
+    <licenseUrl>http://opensource.org/licenses/BSD-2-Clause</licenseUrl>
+    <projectUrl>https://github.com/Suremaker/ObjectSerialization-Net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A fast object graph binary serialization for .NET with support for:
+* serialization of classes, structures and primitives at root or type member level;
+* serialization of derived types referenced by interface, base class or abstract class type;
+* serialization of POCO objects;
+* standard NonSerializedAttribute and dedicated NonSerializedBackendAttribute for automatic properties;
+* serialization of classes without parameter-less constructor;
+* serialization of arrays and collections implementing ICollection&lt;T&gt;;</description>
+    <summary>A fast object graph binary serialization for .NET</summary>
+    <releaseNotes>+ ensured proper and constant order of registered types with TypeInfoRepository.RegisterPredefinedUsingSerializableFrom</releaseNotes>
+    <copyright>Copyright (c) 2013, Wojciech Kotlarski</copyright>
+    <language>en-US</language>
+    <tags>binary serialization</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0" />
+    </dependencies>
+  </metadata>
+</package>
