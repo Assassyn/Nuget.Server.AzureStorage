@@ -36,12 +36,12 @@ namespace Nuget.Server.AzureStorage
 
         public string GetPackageFileName(string packageId, SemanticVersion version)
         {
-            return GetAzureFriendlyName(packageId) + "|" + version.ToString();
+            return AzurePathResolver.GetAzureFriendlyName(packageId) + "|" + version.ToString();
         }
 
         private static string GetAzureFriendlyName(string packageId)
         {
-            return packageId.ToLower().Replace(".","-");
+            return packageId.ToLower().Replace(".", "-");
         }
 
         public string GetPackageFileName(IPackage package)

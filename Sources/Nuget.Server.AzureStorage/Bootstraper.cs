@@ -1,5 +1,7 @@
 ﻿namespace Nuget.Server.AzureStorage
 {
+    using AutoMapper;
+    using NuGet;
     using NuGet.Server.Infrastructure;
 
     public static class Bootstraper

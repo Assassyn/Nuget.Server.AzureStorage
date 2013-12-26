@@ -16,16 +16,18 @@ namespace Nuget.Server.AzureStorage
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <remarks>
-    /// 
+    ///
     /// </remarks>
     internal sealed class AzureFileSystem : IFileSystem
     {
         private CloudStorageAccount storageAccount;
         private CloudBlobClient blobClient;
+        private const string Created = "Creted";
+        private const string LatestModificationDate = "LastModified";
+        private const string LastUploadedVersion = "LastVersion";
+        private const string LastAccessed = "LastAccessed";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureFileSystem"/> class.
@@ -63,11 +65,21 @@ namespace Nuget.Server.AzureStorage
 
         private void AddFileCore(string path, Action<Stream> writeToStream)
         {
-            var packageName =  this.GetPackageName(path);
+            var packageName = this.GetPackageName(path);
             var container = this.blobClient.GetContainerReference(packageName);
+            var existed = !container.Exists();
             container.CreateIfNotExists();
 
-            var packageVersion =  this.GetPackageVerion(path);
+            var packageVersion = this.GetPackageVersion(path);
+
+            container.Metadata[AzureFileSystem.LatestModificationDate] = DateTimeOffset.Now.ToString();
+            if (existed)
+            {
+                container.Metadata[AzureFileSystem.Created] = DateTimeOffset.Now.ToString();
+            }
+            container.Metadata[AzureFileSystem.LastUploadedVersion] = packageVersion;
+            container.SetMetadata();
+
             var blob = container.GetBlockBlobReference(packageVersion);
             using (var stream = new MemoryStream())
             {
@@ -75,16 +87,9 @@ namespace Nuget.Server.AzureStorage
                 stream.Position = 0;
                 blob.UploadFromStream(stream);
             }
-        }
 
-        private string GetPackageVerion(string path)
-        {
-            return path.Split('|')[1];
-        }
-
-        private string GetPackageName(string path)
-        {
-            return path.Split('|')[0];
+            blob.Metadata[AzureFileSystem.LatestModificationDate] = DateTimeOffset.Now.ToString();
+            blob.SetMetadata();
         }
 
         public System.IO.Stream CreateFile(string path)
@@ -99,71 +104,122 @@ namespace Nuget.Server.AzureStorage
 
         public void DeleteFile(string path)
         {
-            throw new NotImplementedException();
+            var project = this.GetPackageName(path);
+            var version = this.GetPackageVersion(path);
+            var container = this.blobClient.GetContainerReference(project);
+
+            if (container.Exists())
+            {
+                var blob = container.GetBlockBlobReference(version);
+                blob.Delete();
+            }
+
+            if (container.ListBlobs().Count() == 0)
+            {
+                container.Delete();
+            }
         }
 
         public bool DirectoryExists(string path)
         {
-            throw new NotImplementedException();
+            var container = this.blobClient.GetContainerReference(path);
+            return container.Exists();
         }
 
         public bool FileExists(string path)
         {
-            throw new NotImplementedException();
+            var exists = false;
+            var container = this.blobClient.GetContainerReference(path);
+            if (container.Exists())
+            {
+                container.FetchAttributes();
+                var latestVersion = container.Metadata[AzureFileSystem.LastUploadedVersion];
+
+                var blob = container.GetBlockBlobReference(latestVersion);
+
+                exists = blob.Exists();
+            }
+            return exists;
         }
 
         public DateTimeOffset GetCreated(string path)
         {
-            throw new NotImplementedException();
+            var container = this.blobClient.GetContainerReference(path);
+
+            if (container.Exists())
+            {
+                return container.Properties.LastModified ?? DateTimeOffset.MinValue;
+            }
+
+            return DateTimeOffset.MinValue;
         }
 
         public IEnumerable<string> GetDirectories(string path)
         {
-            return blobClient.ListContainers().Select(x => x.Name);
+            return new string[0];
         }
 
         public IEnumerable<string> GetFiles(string path, string filter, bool recursive)
         {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return blobClient.ListContainers().Select(x => x.Name);
+            }
             var container = this.blobClient.GetContainerReference(path);
-            return container.ListBlobs().Select(x=>x.Container.Name);
+            return container.ListBlobs().Select(x => x.Container.Name);
         }
 
         public string GetFullPath(string path)
         {
-            throw new NotImplementedException();
+            var container = this.blobClient.GetContainerReference(path);
+            container.FetchAttributes();
+            var latestVersion = container.Metadata[AzureFileSystem.LastUploadedVersion];
+
+            return path + "|" + latestVersion;
         }
 
         public DateTimeOffset GetLastAccessed(string path)
         {
-            throw new NotImplementedException();
+            var container = this.blobClient.GetContainerReference(path);
+
+            if (container.Exists())
+            {
+                container.FetchAttributes();
+                var timestamp = container.Metadata[AzureFileSystem.LastAccessed];
+                return DateTimeOffset.Parse(timestamp);
+            }
+
+            return DateTimeOffset.MinValue;
         }
 
         public DateTimeOffset GetLastModified(string path)
         {
             var container = this.blobClient.GetContainerReference(path);
-            return new DateTimeOffset();
+
+            if (container.Exists())
+            {
+                return container.Properties.LastModified ?? DateTimeOffset.MinValue;
+            }
+
+            return DateTimeOffset.MinValue;
         }
 
-        public ILogger Logger
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public ILogger Logger { get; set; }
 
         public void MakeFileWritable(string path)
         {
-            throw new NotImplementedException();
         }
 
         public System.IO.Stream OpenFile(string path)
         {
-            throw new NotImplementedException();
+            var container = this.blobClient.GetContainerReference(path);
+            container.FetchAttributes();
+            var latestVersion = container.Metadata[AzureFileSystem.LastUploadedVersion];
+
+            var blob = container.GetBlockBlobReference(latestVersion);
+            var stream = new MemoryStream();
+            blob.DownloadToStream(stream);
+            return stream;
         }
 
         public string Root
@@ -172,6 +228,27 @@ namespace Nuget.Server.AzureStorage
             {
                 return string.Empty;
             }
+        }
+
+        private string GetPackageVersion(string path)
+        {
+            return path.Split('|')[1];
+        }
+
+        private string GetPackageName(string path)
+        {
+            return path.Split('|')[0];
+        }
+
+        private bool IsFilePath(string path)
+        {
+            return path.Contains('|');
+        }
+
+        private void UpdateAccessTimeStamp(CloudBlobContainer container)
+        {
+            container.Metadata[AzureFileSystem.LastAccessed] = DateTimeOffset.Now.ToString();
+            container.SetMetadata();
         }
     }
 }
