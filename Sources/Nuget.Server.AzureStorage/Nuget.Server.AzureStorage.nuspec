@@ -2,11 +2,11 @@
 <package >
   <metadata>
     <id>Nuget.Server.AzureStorage</id>
-    <version>1.0.0</version>
+    <version>1.0.1.0</version>
     <authors>Szymon Sasin</authors>
     <owners>Szymon Sasin</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <licenseUrl>https://github.com/SzymonSasin/Nuget.Server.AzureStorage/blob/master/LICENCE</licenseUrl>
+    <projectUrl>https://github.com/SzymonSasin/Nuget.Server.AzureStorage</projectUrl>
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Allows to switch the NuGet.Server storage from files system to Windows Azure Storage</description>

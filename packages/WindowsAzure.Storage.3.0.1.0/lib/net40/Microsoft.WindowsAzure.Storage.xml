@@ -2756,7 +2756,7 @@
             <param name="currentToken">A continuation token returned by a previous listing operation.</param>
             <returns>A <see cref="T:Microsoft.WindowsAzure.Storage.Core.Executor.RESTCommand`1"/> that lists the blobs.</returns>
         </member>
-        <member name="M:Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer.ParseSizeAndLastModified(System.Net.HttpWebResponse)">
+        <member name="M:Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer.UpdateETagAndLastModified(System.Net.HttpWebResponse)">
             <summary>
             Retrieve ETag and LastModified date time from response.
             </summary>
@@ -24552,6 +24552,11 @@
         <member name="F:Microsoft.WindowsAzure.Storage.Shared.Protocol.Constants.DefaultTableName">
             <summary>
             Default name for Tables. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAzure.Storage.Shared.Protocol.Constants.XMLAcceptHeaderValue">
+            <summary>
+            Header value to set Accept to XML.
             </summary>
         </member>
         <member name="F:Microsoft.WindowsAzure.Storage.Shared.Protocol.Constants.AtomAcceptHeaderValue">
