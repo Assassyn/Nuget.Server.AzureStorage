@@ -5,3 +5,4 @@
 
 /Sources/Nuget.Server.AzureStorage/bin
 /Sources/Nuget.Server.AzureStorage/obj
+/NUget package push
