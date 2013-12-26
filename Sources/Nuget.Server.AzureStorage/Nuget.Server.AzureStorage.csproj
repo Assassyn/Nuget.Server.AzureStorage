@@ -111,7 +111,7 @@
     <Compile Include="AzureServerPackageRepository .cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Nuget.Server.AzureStorage.csproj.nuspec" />
+    <None Include="Nuget.Server.AzureStorage.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
