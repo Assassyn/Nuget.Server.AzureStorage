@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Nuget.Server.AzureStorage")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Azure Storage provider for the NuGet.Server")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Aranea IT")]
 [assembly: AssemblyProduct("Nuget.Server.AzureStorage")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright Aranea IT©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
