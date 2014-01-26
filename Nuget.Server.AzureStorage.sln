@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget.Server.AzureStorage", "Sources\Nuget.Server.AzureStorage\Nuget.Server.AzureStorage.csproj", "{A49F5A8C-EB06-43C1-A2FD-B025547BB6F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget.Server.TestInstance", "Sources\Nuget.Server.TestInstance\Nuget.Server.TestInstance.csproj", "{34193A96-5D22-426F-B35B-77AFA36123A9}"
