@@ -24,5 +24,25 @@
         /// The last accessed
         /// </summary>
         public const string LastAccessed = "LastAccessed";
+
+        public const string Package = "Package";
+
+        ///// <summary>
+        ///// Subset of Constants for Package Metadata.
+        ///// </summary>
+        //public sealed class Package
+        //{
+        //    /// <summary>
+        //    /// The identifier
+        //    /// </summary>
+        //    public const string Id = "Package.Id";
+
+        //    /// <summary>
+        //    /// The version
+        //    /// </summary>
+        //    public const string Version = "Package.Version";
+        //}
+
+        public const string PackageId = "PackageId";
     }
 }

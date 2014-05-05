@@ -7,7 +7,9 @@
 
 namespace Nuget.Server.AzureStorage.Doman.Entities
 {
+    using AutoMapper;
     using Microsoft.WindowsAzure.Storage.Blob;
+    using Newtonsoft.Json;
     using NuGet;
     using System;
     using System.Collections.Generic;
@@ -25,9 +27,17 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
 
         }
 
-        public AzurePackage(CloudBlobContainer container)
+        public static AzurePackage Create(CloudBlobContainer container)
         {
+            container.FetchAttributes();
+            var latesVersion = container.Metadata[AzurePropertiesConstants.LastUploadedVersion];
 
+            var blob = container.GetBlockBlobReference(latesVersion);
+            blob.FetchAttributes();
+            var jsonPackage = blob.Metadata[AzurePropertiesConstants.Package];
+            var pacakge = JsonConvert.DeserializeObject<AzurePackage>(jsonPackage);
+
+            return pacakge;
         }
 
         public IEnumerable<IPackageFile> GetFiles()

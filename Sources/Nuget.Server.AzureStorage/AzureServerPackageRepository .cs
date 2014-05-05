@@ -7,9 +7,11 @@
 
 namespace Nuget.Server.AzureStorage
 {
+    using AutoMapper;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
+    using Newtonsoft.Json;
     using Nuget.Server.AzureStorage.Domain.Services;
     using Nuget.Server.AzureStorage.Doman.Entities;
     using NuGet;
@@ -41,6 +43,14 @@ namespace Nuget.Server.AzureStorage
 
         public Package GetMetadataPackage(IPackage package)
         {
+            var name = this.packageLocator.GetContainerName(package);
+            var container = this.blobClient.GetContainerReference(name);
+            var blobName = this.packageLocator.GetItemName(package);
+            var blob = container.GetBlockBlobReference(blobName);
+
+            blob.FetchAttributes();
+            var loadedPackageInfo = JsonConvert.DeserializeObject<AzurePackage>(blob.Metadata[AzurePropertiesConstants.Package]);
+
             return new Package(package, new DerivedPackageData());
         }
 
@@ -64,22 +74,23 @@ namespace Nuget.Server.AzureStorage
             var name = this.packageLocator.GetContainerName(package);
             var container = this.blobClient.GetContainerReference(name);
 
-            container.CreateIfNotExists();
+            var exists = container.CreateIfNotExists();
 
-            this.UpdateMetadata(package, container);
+            this.UpdateContainerMetadata(package, container, exists);
 
-            var blobName = this.packageLocator.GetItemName(package);
+            var blobName = package.Version.ToString();
+            
+            // this.packageLocator.GetItemName(package);
             var blob = container.GetBlockBlobReference(blobName);
             blob.UploadFromStream(package.GetStream());
-            blob.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
-            blob.SetMetadata();
+            this.UpdateBlobMetadata(package, blob);
         }
 
         public IQueryable<IPackage> GetPackages()
         {
             return this.blobClient
                 .ListContainers()
-                .Select(x => new AzurePackage(x))
+                .Select(x => AzurePackage.Create(x))
                 .AsQueryable<IPackage>();
         }
 
@@ -121,15 +132,24 @@ namespace Nuget.Server.AzureStorage
             }
         }
 
-        private void UpdateMetadata(IPackage package, CloudBlobContainer container)
+        private void UpdateContainerMetadata(IPackage package, CloudBlobContainer container, bool exists)
         {
             container.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
-            if (!container.Exists())
+            if (!exists)
             {
                 container.Metadata[AzurePropertiesConstants.Created] = DateTimeOffset.Now.ToString();
             }
             container.Metadata[AzurePropertiesConstants.LastUploadedVersion] = package.Version.ToString();
+            container.Metadata[AzurePropertiesConstants.PackageId] = package.Id;
             container.SetMetadata();
+        }
+
+        private void UpdateBlobMetadata(IPackage package, CloudBlockBlob blob)
+        {
+            blob.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
+            var azurePackage = Mapper.Map<AzurePackage>(package);
+            blob.Metadata[AzurePropertiesConstants.Package] = JsonConvert.SerializeObject(azurePackage);
+            blob.SetMetadata();
         }
     }
 }
