@@ -243,5 +243,12 @@ namespace Nuget.Server.AzureStorage
             get;
             set;
         }
+
+
+        public bool DevelopmentDependency
+        {
+            get;
+            set;
+        }
     }
 }

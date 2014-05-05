@@ -250,5 +250,24 @@ namespace Nuget.Server.AzureStorage
             container.Metadata[AzureFileSystem.LastAccessed] = DateTimeOffset.Now.ToString();
             container.SetMetadata();
         }
+
+
+        public void AddFiles(IEnumerable<IPackageFile> files, string rootDir)
+        {
+            FileSystemExtensions.AddFiles(this, files, rootDir);
+        }
+
+        public void DeleteFiles(IEnumerable<IPackageFile> files, string rootDir)
+        {
+            foreach (var file in files)
+            {
+                this.DeleteFile(file.Path);
+            }
+        }
+
+        public void MoveFile(string source, string destination)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
