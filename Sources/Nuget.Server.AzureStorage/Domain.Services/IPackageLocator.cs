@@ -1,11 +1,6 @@
 ﻿using NuGet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Nuget.Server.AzureStorage.Services
+namespace Nuget.Server.AzureStorage.Domain.Services
 {
     /// <summary>
     /// Helps to get azure names.

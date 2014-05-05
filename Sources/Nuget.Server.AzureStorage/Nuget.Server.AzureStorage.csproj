@@ -74,16 +74,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NuGet.Core, Version=2.8.50320.36, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NuGet.Core.2.8.1\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
-    <Reference Include="NuGet.Server, Version=2.8.50320.36, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NuGet.Server">
       <HintPath>..\..\packages\NuGet.Server.2.8.1\lib\net40\NuGet.Server.dll</HintPath>
     </Reference>
     <Reference Include="ObjectSerialization">
@@ -109,30 +107,27 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\WebActivatorEx.2.0.5\lib\net40\WebActivatorEx.dll</HintPath>
+    <Reference Include="WebActivatorEx">
+      <HintPath>..\..\packages\WebActivatorEx.2.0.2\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzureFileSystem.cs" />
-    <Compile Include="AzurePathResolver.cs" />
     <Compile Include="AzurePropertiesConstants.cs" />
+    <Compile Include="AzureServerPackageRepository .cs" />
     <Compile Include="Bootstraper.cs" />
+    <Compile Include="DataServices\Routes.cs" />
     <Compile Include="Doman.Entities\AzurePackage.cs" />
-    <Compile Include="PackageAssemblyReference.cs" />
     <Compile Include="PackageMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AzureServerPackageRepository .cs" />
-    <Compile Include="Services\IPackageLocator.cs" />
-    <Compile Include="Services\AzurePackageLocator.cs" />
+    <Compile Include="Domain.Services\AzurePackageLocator.cs" />
+    <Compile Include="Domain.Services\IPackageLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Nuget.Server.AzureStorage.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="DataServices\Packages.svc" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />

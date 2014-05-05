@@ -5,15 +5,9 @@
 // <author>Szymon M Sasin</author>
 //-----------------------------------------------------------------------
 
-namespace Nuget.Server.AzureStorage.Services
+namespace Nuget.Server.AzureStorage.Domain.Services
 {
     using NuGet;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
 
     internal sealed class AzurePackageLocator : IPackageLocator
     {

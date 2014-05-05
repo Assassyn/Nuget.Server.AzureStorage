@@ -10,14 +10,13 @@ namespace Nuget.Server.AzureStorage
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
+    using Nuget.Server.AzureStorage.Domain.Services;
     using Nuget.Server.AzureStorage.Doman.Entities;
-    using Nuget.Server.AzureStorage.Services;
     using NuGet;
     using NuGet.Server.DataServices;
     using NuGet.Server.Infrastructure;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
 
@@ -42,7 +41,7 @@ namespace Nuget.Server.AzureStorage
 
         public Package GetMetadataPackage(IPackage package)
         {
-            throw new NotImplementedException();
+            return new Package(package, new DerivedPackageData());
         }
 
         public IEnumerable<IPackage> GetUpdates(
@@ -64,18 +63,12 @@ namespace Nuget.Server.AzureStorage
         {
             var name = this.packageLocator.GetContainerName(package);
             var container = this.blobClient.GetContainerReference(name);
-            var existed = !container.Exists();
 
             container.CreateIfNotExists();
-            container.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
-            if (existed)
-            {
-                container.Metadata[AzurePropertiesConstants.Created] = DateTimeOffset.Now.ToString();
-            }
-            var blobName = this.packageLocator.GetItemName(package);
-            container.Metadata[AzurePropertiesConstants.LastUploadedVersion] = blobName;
-            container.SetMetadata();
 
+            this.UpdateMetadata(package, container);
+
+            var blobName = this.packageLocator.GetItemName(package);
             var blob = container.GetBlockBlobReference(blobName);
             blob.UploadFromStream(package.GetStream());
             blob.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
@@ -84,7 +77,10 @@ namespace Nuget.Server.AzureStorage
 
         public IQueryable<IPackage> GetPackages()
         {
-            throw new NotImplementedException();
+            return this.blobClient
+                .ListContainers()
+                .Select(x => new AzurePackage(x))
+                .AsQueryable<IPackage>();
         }
 
         public void RemovePackage(IPackage package)
@@ -123,6 +119,17 @@ namespace Nuget.Server.AzureStorage
             {
                 return false;
             }
+        }
+
+        private void UpdateMetadata(IPackage package, CloudBlobContainer container)
+        {
+            container.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
+            if (!container.Exists())
+            {
+                container.Metadata[AzurePropertiesConstants.Created] = DateTimeOffset.Now.ToString();
+            }
+            container.Metadata[AzurePropertiesConstants.LastUploadedVersion] = package.Version.ToString();
+            container.SetMetadata();
         }
     }
 }

@@ -1,1 +1,2 @@
-nuget push  AraneaIT.Migration.Engine.1.0.10.0.nupkg -ApiKey 14122011 -Source http://localhost:59953/
+nuget push NuGet.Server.2.8.1.nupkg -s http://localhost:59953 ApiKey 14122011
+pause

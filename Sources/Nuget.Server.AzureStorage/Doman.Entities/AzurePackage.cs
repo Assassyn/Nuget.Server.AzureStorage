@@ -7,9 +7,11 @@
 
 namespace Nuget.Server.AzureStorage.Doman.Entities
 {
+    using Microsoft.WindowsAzure.Storage.Blob;
     using NuGet;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
     using System.Text;
@@ -18,11 +20,22 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
 
     internal sealed class AzurePackage : IPackage
     {
-        public IEnumerable<IPackageFile> GetFiles() {
+        public AzurePackage()
+        {
+
+        }
+
+        public AzurePackage(CloudBlobContainer container)
+        {
+
+        }
+
+        public IEnumerable<IPackageFile> GetFiles()
+        {
             return null;
         }
 
-        public System.IO.Stream GetStream()
+        public Stream GetStream()
         {
             return null;
         }
@@ -31,7 +44,7 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
         {
             return null;
         }
-        
+
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; set; }
 
         public bool IsAbsoluteLatestVersion { get; set; }
