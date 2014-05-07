@@ -115,7 +115,13 @@
     <Compile Include="AzurePropertiesConstants.cs" />
     <Compile Include="AzureServerPackageRepository .cs" />
     <Compile Include="Bootstraper.cs" />
+    <Compile Include="Domain.Services\AzurePackageSerializer.cs" />
+    <Compile Include="Domain.Services\IAzurePackageSerializer.cs" />
+    <Compile Include="Domain.Services\Uriblob.cs" />
     <Compile Include="Doman.Entities\AzurePackage.cs" />
+    <Compile Include="Doman.Entities\AzurePackageAssemblyReference.cs" />
+    <Compile Include="Doman.Entities\AzurePackageDependencySet.cs" />
+    <Compile Include="ObjectExtension.cs" />
     <Compile Include="PackageMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Domain.Services\AzurePackageLocator.cs" />

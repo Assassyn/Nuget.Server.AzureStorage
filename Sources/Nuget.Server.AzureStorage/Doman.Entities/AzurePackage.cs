@@ -7,37 +7,17 @@
 
 namespace Nuget.Server.AzureStorage.Doman.Entities
 {
-    using AutoMapper;
-    using Microsoft.WindowsAzure.Storage.Blob;
-    using Newtonsoft.Json;
-    using NuGet;
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Runtime.Versioning;
-    using System.Text;
-    using System.Threading.Tasks;
+    using Newtonsoft.Json;
+    using NuGet;
 
-
-    internal sealed class AzurePackage : IPackage
+    public sealed class AzurePackage : IPackage
     {
         public AzurePackage()
         {
-
-        }
-
-        public static AzurePackage Create(CloudBlobContainer container)
-        {
-            container.FetchAttributes();
-            var latesVersion = container.Metadata[AzurePropertiesConstants.LastUploadedVersion];
-
-            var blob = container.GetBlockBlobReference(latesVersion);
-            blob.FetchAttributes();
-            var jsonPackage = blob.Metadata[AzurePropertiesConstants.Package];
-            var pacakge = JsonConvert.DeserializeObject<AzurePackage>(jsonPackage);
-
-            return pacakge;
         }
 
         public IEnumerable<IPackageFile> GetFiles()
@@ -55,6 +35,7 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
             return null;
         }
 
+        [JsonIgnore]
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; set; }
 
         public bool IsAbsoluteLatestVersion { get; set; }
@@ -69,12 +50,14 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
 
         public string Copyright { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<PackageDependencySet> DependencySets { get; set; }
 
         public string Description { get; set; }
 
         public bool DevelopmentDependency { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
 
         public Uri IconUrl { get; set; }

@@ -18,8 +18,10 @@ namespace Nuget.Server.AzureStorage
         {
             NinjectBootstrapper.Kernel.Rebind<IServerPackageRepository>().To<AzureServerPackageRepository>();
             NinjectBootstrapper.Kernel.Bind<IPackageLocator>().To<AzurePackageLocator>();
+            NinjectBootstrapper.Kernel.Bind<IAzurePackageSerializer>().To<AzurePackageSerializer>();
 
             Mapper.CreateMap<IPackage, AzurePackage>();
+            Mapper.CreateMap<PackageDependencySet, AzurePackageDependencySet>();
         }
     }
 }
