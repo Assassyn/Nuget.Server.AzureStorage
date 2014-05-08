@@ -35,7 +35,6 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
             return null;
         }
 
-        [JsonIgnore]
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; set; }
 
         public bool IsAbsoluteLatestVersion { get; set; }
@@ -50,14 +49,12 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
 
         public string Copyright { get; set; }
 
-        [JsonIgnore]
         public IEnumerable<PackageDependencySet> DependencySets { get; set; }
 
         public string Description { get; set; }
 
         public bool DevelopmentDependency { get; set; }
 
-        [JsonIgnore]
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
 
         public Uri IconUrl { get; set; }

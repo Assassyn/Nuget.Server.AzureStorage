@@ -66,7 +66,9 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             {
                 package.Tags = blob.Metadata["Tags"];
             }
-            package.DependencySets = blob.Metadata["Dependencies"]
+            var dependencySetContent = blob.Metadata["Dependencies"];
+            dependencySetContent = this.Base64Decode(dependencySetContent);
+            package.DependencySets = dependencySetContent
                 .FromJson<IEnumerable<AzurePackageDependencySet>>()
                 .Select(x => new PackageDependencySet(x.TargetFramework, x.Dependencies));
             package.IsAbsoluteLatestVersion = blob.Metadata["IsAbsoluteLatestVersion"].ToBool();
@@ -114,13 +116,25 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             {
                 blob.Metadata["Tags"] = package.Tags;
             }
-            blob.Metadata["Dependencies"] = package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson();
+            blob.Metadata["Dependencies"] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
             blob.Metadata["IsAbsoluteLatestVersion"] = package.IsAbsoluteLatestVersion.ToString();
             blob.Metadata["IsLatestVersion"] = package.IsLatestVersion.ToString();
             blob.Metadata["MinClientVersion"] = package.MinClientVersion.ToString();
             blob.Metadata["Listed"] = package.Listed.ToString();
 
             blob.SetMetadata();
+        }
+
+        private string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        private string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
     }
 }
