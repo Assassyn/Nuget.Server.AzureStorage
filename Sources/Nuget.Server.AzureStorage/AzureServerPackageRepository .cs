@@ -11,7 +11,6 @@ namespace Nuget.Server.AzureStorage
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
-    using Newtonsoft.Json;
     using Nuget.Server.AzureStorage.Domain.Services;
     using Nuget.Server.AzureStorage.Doman.Entities;
     using NuGet;
@@ -23,17 +22,43 @@ namespace Nuget.Server.AzureStorage
     using System.Runtime.Versioning;
 
     /// <summary>
-    /// An class used to provide diffrent FileSystem to <see cref="ServerPackageRepository"/>
+    /// An class used to provide diffrent FileSystem to <see cref="ServerPackageRepository" />
     /// </summary>
     public class AzureServerPackageRepository : IServerPackageRepository
     {
+        /// <summary>
+        /// The storage account
+        /// </summary>
         private readonly CloudStorageAccount storageAccount;
+
+        /// <summary>
+        /// The BLOB client
+        /// </summary>
         private readonly CloudBlobClient blobClient;
+
+        /// <summary>
+        /// The package locator
+        /// </summary>
         private readonly IPackageLocator packageLocator;
+
+        /// <summary>
+        /// The package serializer
+        /// </summary>
         private readonly IAzurePackageSerializer packageSerializer;
 
+        /// <summary>
+        /// Gets or sets the package save mode.
+        /// </summary>
+        /// <value>
+        /// The package save mode.
+        /// </value>
         public PackageSaveModes PackageSaveMode { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AzureServerPackageRepository"/> class.
+        /// </summary>
+        /// <param name="packageLocator">The package locator.</param>
+        /// <param name="packageSerializer">The package serializer.</param>
         public AzureServerPackageRepository(IPackageLocator packageLocator, IAzurePackageSerializer packageSerializer)
         {
             this.packageLocator = packageLocator;
@@ -43,11 +68,26 @@ namespace Nuget.Server.AzureStorage
             this.blobClient = this.storageAccount.CreateCloudBlobClient();
         }
 
+        /// <summary>
+        /// Gets the metadata package.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <returns></returns>
         public Package GetMetadataPackage(IPackage package)
         {
             return new Package(package, new DerivedPackageData());
         }
 
+        /// <summary>
+        /// Gets the updates.
+        /// </summary>
+        /// <param name="packages">The packages.</param>
+        /// <param name="includePrerelease">if set to <c>true</c> [include prerelease].</param>
+        /// <param name="includeAllVersions">if set to <c>true</c> [include all versions].</param>
+        /// <param name="targetFrameworks">The target frameworks.</param>
+        /// <param name="versionConstraints">The version constraints.</param>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public IEnumerable<IPackage> GetUpdates(
             IEnumerable<IPackageName> packages,
             bool includePrerelease,
@@ -55,14 +95,29 @@ namespace Nuget.Server.AzureStorage
             IEnumerable<FrameworkName> targetFrameworks,
             IEnumerable<IVersionSpec> versionConstraints)
         {
-            throw new NotImplementedException();
+            return this.GetUpdatesCore(packages, includePrerelease, includeAllVersions, targetFrameworks, versionConstraints);
         }
 
+        /// <summary>
+        /// Searches the specified search term.
+        /// </summary>
+        /// <param name="searchTerm">The search term.</param>
+        /// <param name="targetFrameworks">The target frameworks.</param>
+        /// <param name="allowPrereleaseVersions">if set to <c>true</c> [allow prerelease versions].</param>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public IQueryable<IPackage> Search(string searchTerm, IEnumerable<string> targetFrameworks, bool allowPrereleaseVersions)
         {
-            throw new NotImplementedException();
+            return (
+                from p in this.GetPackages().Find(searchTerm).FilterByPrerelease(allowPrereleaseVersions)
+                where p.Listed
+                select p).AsQueryable<IPackage>();
         }
 
+        /// <summary>
+        /// Adds the package.
+        /// </summary>
+        /// <param name="package">The package.</param>
         public void AddPackage(IPackage package)
         {
             var name = this.packageLocator.GetContainerName(package);
@@ -80,6 +135,10 @@ namespace Nuget.Server.AzureStorage
             this.UpdateBlobMetadata(package, blob);
         }
 
+        /// <summary>
+        /// Gets the packages.
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<IPackage> GetPackages()
         {
             return this.blobClient
@@ -88,6 +147,10 @@ namespace Nuget.Server.AzureStorage
                 .AsQueryable<IPackage>();
         }
 
+        /// <summary>
+        /// Removes the package.
+        /// </summary>
+        /// <param name="package">The package.</param>
         public void RemovePackage(IPackage package)
         {
             var name = this.packageLocator.GetContainerName(package);
@@ -101,6 +164,11 @@ namespace Nuget.Server.AzureStorage
             }
         }
 
+        /// <summary>
+        /// Removes the package.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="version">The version.</param>
         public void RemovePackage(string packageId, SemanticVersion version)
         {
             this.RemovePackage(new AzurePackage
@@ -110,6 +178,12 @@ namespace Nuget.Server.AzureStorage
             });
         }
 
+        /// <summary>
+        /// Gets the source.
+        /// </summary>
+        /// <value>
+        /// The source.
+        /// </value>
         public string Source
         {
             get
@@ -118,6 +192,12 @@ namespace Nuget.Server.AzureStorage
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether [supports prerelease packages].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [supports prerelease packages]; otherwise, <c>false</c>.
+        /// </value>
         public bool SupportsPrereleasePackages
         {
             get
@@ -126,6 +206,12 @@ namespace Nuget.Server.AzureStorage
             }
         }
 
+        /// <summary>
+        /// Updates the container metadata.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="exists">if set to <c>true</c> [exists].</param>
         private void UpdateContainerMetadata(IPackage package, CloudBlobContainer container, bool exists)
         {
             container.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
@@ -138,6 +224,11 @@ namespace Nuget.Server.AzureStorage
             container.SetMetadata();
         }
 
+        /// <summary>
+        /// Updates the BLOB metadata.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <param name="blob">The BLOB.</param>
         private void UpdateBlobMetadata(IPackage package, CloudBlockBlob blob)
         {
             blob.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
@@ -147,6 +238,11 @@ namespace Nuget.Server.AzureStorage
             blob.SetMetadata();
         }
 
+        /// <summary>
+        /// Gets the latest BLOB.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <returns></returns>
         private CloudBlockBlob GetLatestBlob(CloudBlobContainer container)
         {
             container.FetchAttributes();
