@@ -26,7 +26,7 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
             }
             set
             {
-                this.SeriazlizableDependencies = value.Select(x => x.ToString());
+                this.SeriazlizableDependencies = value.Select(x => x.Id + " " + new AzureVersionSpec(x.VersionSpec).ToJson());
             }
         }
 
@@ -73,14 +73,16 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
         {
             var firstSpace = x.IndexOf(' ');
             var id = x.Substring(0, firstSpace);
-            var version = x.Substring(firstSpace);
-            if (string.IsNullOrWhiteSpace(version))
+            var serializedVersion = x.Substring(firstSpace);
+
+            if (string.IsNullOrWhiteSpace(serializedVersion))
             {
                 return new PackageDependency(id);
             }
             else
             {
-                return new PackageDependency(id, VersionUtility.ParseVersionSpec(version));
+                var version = serializedVersion.FromJson<AzureVersionSpec>();
+                return new PackageDependency(id, version.ToVersionSpec());
             }
         }
     }
