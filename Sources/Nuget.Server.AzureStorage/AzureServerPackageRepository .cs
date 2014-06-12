@@ -106,9 +106,7 @@ namespace Nuget.Server.AzureStorage
                 return derivedPackageData;
             }
 
-            var containerName = this.packageLocator.GetContainerName(package);
-            var container = this.blobClient.GetContainerReference(containerName);
-            var blob = this.GetLatestBlob(container);
+            var blob = this.GetLatestBlobForPackage(package);
 
             long length = 0;
             byte[] inArray;
@@ -133,6 +131,13 @@ namespace Nuget.Server.AzureStorage
             DerivedDataCache.AddOrUpdate(package.Id, derivedPackageData, (key, old) => derivedPackageData);
 
             return derivedPackageData;
+        }
+
+        public CloudBlockBlob GetLatestBlobForPackage(IPackage package) {
+            var containerName = this.packageLocator.GetContainerName(package);
+            var container = this.blobClient.GetContainerReference(containerName);
+            var blob = this.GetLatestBlob(container);
+            return blob;
         }
 
         /// <summary>
