@@ -7,10 +7,16 @@
 
 namespace Nuget.Server.AzureStorage
 {
+    using System.Collections.Concurrent;
+    using System.IO;
+
     using AutoMapper;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
+
+    using Ninject;
+
     using Nuget.Server.AzureStorage.Domain.Services;
     using Nuget.Server.AzureStorage.Doman.Entities;
     using NuGet;
@@ -55,6 +61,17 @@ namespace Nuget.Server.AzureStorage
         public PackageSaveModes PackageSaveMode { get; set; }
 
         /// <summary>
+        /// Cache for derived data for each package
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, DerivedPackageData> DerivedDataCache = new ConcurrentDictionary<string, DerivedPackageData>();
+
+        /// <summary>
+        /// HashProvider to calculate the hash of the package
+        /// </summary>
+        [Inject]
+        public IHashProvider HashProvider { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AzureServerPackageRepository"/> class.
         /// </summary>
         /// <param name="packageLocator">The package locator.</param>
@@ -75,7 +92,47 @@ namespace Nuget.Server.AzureStorage
         /// <returns></returns>
         public Package GetMetadataPackage(IPackage package)
         {
-            return new Package(package, new DerivedPackageData());
+            return new Package(package, this.CalculateDerivedData(package));
+        }
+
+
+
+        private DerivedPackageData CalculateDerivedData(IPackage package) 
+        {
+            DerivedPackageData derivedPackageData;
+
+            if (DerivedDataCache.TryGetValue(package.Id, out derivedPackageData)) 
+            {
+                return derivedPackageData;
+            }
+
+            var containerName = this.packageLocator.GetContainerName(package);
+            var container = this.blobClient.GetContainerReference(containerName);
+            var blob = this.GetLatestBlob(container);
+
+            long length = 0;
+            byte[] inArray;
+            using (var stream = blob.OpenRead()) 
+            {
+                length = stream.Length;
+                inArray = this.HashProvider.CalculateHash(stream);
+            }
+
+            derivedPackageData = new DerivedPackageData 
+            {
+                PackageSize = length,
+                PackageHash = Convert.ToBase64String(inArray),
+                LastUpdated = blob.Properties.LastModified ?? default(DateTimeOffset),
+                Created = blob.Properties.LastModified ?? default(DateTimeOffset),
+                Path = blob.Uri.ToString(),
+                FullPath = blob.Uri.ToString(),
+                IsAbsoluteLatestVersion = package.IsAbsoluteLatestVersion,
+                IsLatestVersion = package.IsLatestVersion
+            };
+
+            DerivedDataCache.AddOrUpdate(package.Id, derivedPackageData, (key, old) => derivedPackageData);
+
+            return derivedPackageData;
         }
 
         /// <summary>
