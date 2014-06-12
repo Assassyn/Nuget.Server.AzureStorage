@@ -85,41 +85,82 @@ namespace Nuget.Server.AzureStorage.Domain.Services
         public void SaveToMetadata(AzurePackage package, CloudBlockBlob blob)
         {
             blob.Metadata["Id"] = package.Id;
+
+            if (package.Version == null) 
+            {
+                throw new ArgumentException("Package must not have a null Version");
+            }
+
             blob.Metadata["Version"] = package.Version.ToString();
+
             if (!string.IsNullOrEmpty(package.Title))
             {
                 blob.Metadata["Title"] = package.Title;
             }
-            blob.Metadata["Authors"] = string.Join(",", package.Authors);
-            blob.Metadata["Owners"] = string.Join(",", package.Owners);
+
+            if (package.Authors != null)
+            {
+                blob.Metadata["Authors"] = string.Join(",", package.Authors);
+            }
+
+            if (package.Owners != null) 
+            {
+                blob.Metadata["Owners"] = string.Join(",", package.Owners);
+            }
+
             if (package.IconUrl != null)
             {
                 blob.Metadata["IconUrl"] = package.IconUrl.AbsoluteUri;
             }
+
             if (package.LicenseUrl != null)
             {
                 blob.Metadata["LicenseUrl"] = package.LicenseUrl.AbsoluteUri;
             }
+
             if (package.ProjectUrl != null)
             {
                 blob.Metadata["ProjectUrl"] = package.ProjectUrl.AbsoluteUri;
             }
+
             blob.Metadata["RequireLicenseAcceptance"] = package.RequireLicenseAcceptance.ToString();
             blob.Metadata["DevelopmentDependency"] = package.DevelopmentDependency.ToString();
-            blob.Metadata["Description"] = package.Description;
+            
+            if (!string.IsNullOrEmpty(package.Description)) 
+            {
+                blob.Metadata["Description"] = package.Description;
+            }
+            
             if (!string.IsNullOrEmpty(package.Summary))
             {
                 blob.Metadata["Summary"] = package.Summary;
             }
-            blob.Metadata["ReleaseNotes"] = package.ReleaseNotes;
-            if (!string.IsNullOrEmpty(package.Tags))
+
+            if (!string.IsNullOrEmpty(package.ReleaseNotes)) 
+            {
+                blob.Metadata["ReleaseNotes"] = package.ReleaseNotes;
+            }
+
+            if (!string.IsNullOrEmpty(package.Tags)) 
             {
                 blob.Metadata["Tags"] = package.Tags;
             }
+
+            if (package.DependencySets == null) 
+            {
+                throw new ArgumentException("Package must not have a null DependencySets");
+            }
+
             blob.Metadata["Dependencies"] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
+
             blob.Metadata["IsAbsoluteLatestVersion"] = package.IsAbsoluteLatestVersion.ToString();
             blob.Metadata["IsLatestVersion"] = package.IsLatestVersion.ToString();
-            blob.Metadata["MinClientVersion"] = package.MinClientVersion.ToString();
+
+            if (package.MinClientVersion != null) 
+            {
+                blob.Metadata["MinClientVersion"] = package.MinClientVersion.ToString();
+            }
+
             blob.Metadata["Listed"] = package.Listed.ToString();
 
             blob.SetMetadata();
