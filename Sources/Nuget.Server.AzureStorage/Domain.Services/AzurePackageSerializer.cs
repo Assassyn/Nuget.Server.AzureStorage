@@ -17,6 +17,8 @@ namespace Nuget.Server.AzureStorage.Domain.Services
 
     internal sealed class AzurePackageSerializer : IAzurePackageSerializer
     {
+        private const string ReleaseNotesEnc64 = "ReleaseNotesEnc64";
+
         public AzurePackage ReadFromMetadata(CloudBlockBlob blob)
         {
             blob.FetchAttributes();
@@ -61,6 +63,10 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             if (blob.Metadata.ContainsKey("ReleaseNotes"))
             {
                 package.ReleaseNotes = blob.Metadata["ReleaseNotes"];
+            }
+            if (blob.Metadata.ContainsKey(ReleaseNotesEnc64))
+            {
+                package.ReleaseNotes = this.Base64Decode(blob.Metadata[ReleaseNotesEnc64]);
             }
             if (blob.Metadata.ContainsKey("Tags"))
             {
@@ -138,7 +144,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
 
             if (!string.IsNullOrEmpty(package.ReleaseNotes)) 
             {
-                blob.Metadata["ReleaseNotes"] = package.ReleaseNotes;
+                blob.Metadata[ReleaseNotesEnc64] = this.Base64Encode(package.ReleaseNotes);
             }
 
             if (!string.IsNullOrEmpty(package.Tags)) 
