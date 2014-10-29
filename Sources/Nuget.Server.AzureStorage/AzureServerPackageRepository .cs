@@ -142,7 +142,7 @@ namespace Nuget.Server.AzureStorage
         public IQueryable<IPackage> GetPackages()
         {
             return this.blobClient
-                .ListContainers()
+                .ListContainers(NsasConstants.ContainerPrefix)
                 .Select(x => this.packageSerializer.ReadFromMetadata(this.GetLatestBlob(x)))
                 .AsQueryable<IPackage>();
         }
