@@ -26,32 +26,11 @@ namespace Nuget.Server.AzureStorage
     /// </summary>
     public class AzureServerPackageRepository : IServerPackageRepository
     {
-        /// <summary>
-        /// The storage account
-        /// </summary>
         private readonly CloudStorageAccount storageAccount;
-
-        /// <summary>
-        /// The BLOB client
-        /// </summary>
         private readonly CloudBlobClient blobClient;
-
-        /// <summary>
-        /// The package locator
-        /// </summary>
         private readonly IPackageLocator packageLocator;
-
-        /// <summary>
-        /// The package serializer
-        /// </summary>
         private readonly IAzurePackageSerializer packageSerializer;
 
-        /// <summary>
-        /// Gets or sets the package save mode.
-        /// </summary>
-        /// <value>
-        /// The package save mode.
-        /// </value>
         public PackageSaveModes PackageSaveMode { get; set; }
 
         /// <summary>
