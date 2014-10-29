@@ -111,7 +111,10 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             {
                 blob.Metadata["Summary"] = package.Summary;
             }
-            blob.Metadata["ReleaseNotes"] = package.ReleaseNotes;
+            if (!string.IsNullOrEmpty(package.ReleaseNotes))
+            {
+                blob.Metadata["ReleaseNotes"] = package.ReleaseNotes;
+            }
             if (!string.IsNullOrEmpty(package.Tags))
             {
                 blob.Metadata["Tags"] = package.Tags;
@@ -119,7 +122,11 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             blob.Metadata["Dependencies"] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
             blob.Metadata["IsAbsoluteLatestVersion"] = package.IsAbsoluteLatestVersion.ToString();
             blob.Metadata["IsLatestVersion"] = package.IsLatestVersion.ToString();
-            blob.Metadata["MinClientVersion"] = package.MinClientVersion.ToString();
+            if (package.MinClientVersion != null)
+            {
+                blob.Metadata["MinClientVersion"] =  package.MinClientVersion.ToString();
+            }
+            
             blob.Metadata["Listed"] = package.Listed.ToString();
 
             blob.SetMetadata();
