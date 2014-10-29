@@ -102,7 +102,7 @@ namespace Nuget.Server.AzureStorage
             var name = this.packageLocator.GetContainerName(package);
             var container = this.blobClient.GetContainerReference(name);
 
-            var exists = container.CreateIfNotExists();
+            var exists = !container.CreateIfNotExists();
 
             this.UpdateContainerMetadata(package, container, exists);
 
