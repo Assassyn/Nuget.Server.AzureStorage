@@ -13,7 +13,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
     {
         public string GetContainerName(IPackage package)
         {
-            return this.GetAzureFriendlyString(package.Id);
+            return this.GetAzureFriendlyString(NsasConstants.ContainerPrefix+package.Id);
         }
 
         public string GetItemName(IPackage package)
