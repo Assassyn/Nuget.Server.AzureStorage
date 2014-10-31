@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="AzureServerPackageRepositoryTests.cs" />
     <Compile Include="AzureStorageHelpers.cs" />
+    <Compile Include="TestPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
