@@ -23,7 +23,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
 
         private string GetAzureFriendlyString(string packageId)
         {
-            return packageId.ToLower().Replace(".", "-");
+            return packageId.ToLower().Replace(".", "-").Replace("_","-");
         }
     }
 }
