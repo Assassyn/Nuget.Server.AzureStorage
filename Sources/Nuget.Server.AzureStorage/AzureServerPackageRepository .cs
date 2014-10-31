@@ -87,10 +87,12 @@ namespace Nuget.Server.AzureStorage
         /// <exception cref="System.NotImplementedException"></exception>
         public IQueryable<IPackage> Search(string searchTerm, IEnumerable<string> targetFrameworks, bool allowPrereleaseVersions)
         {
-            return (
-                from p in this.GetPackages().Find(searchTerm).FilterByPrerelease(allowPrereleaseVersions)
-                where p.Listed
-                select p).AsQueryable<IPackage>();
+            return 
+                this.GetPackages()
+                .Find(searchTerm)
+                .FilterByPrerelease(allowPrereleaseVersions)
+                .Where(p => p.Listed)
+                .AsQueryable<IPackage>();
         }
 
         /// <summary>
