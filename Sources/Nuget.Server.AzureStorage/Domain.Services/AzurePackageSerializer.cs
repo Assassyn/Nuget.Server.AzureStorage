@@ -49,33 +49,33 @@ namespace Nuget.Server.AzureStorage.Domain.Services
                 package.ProjectUrl = new Uri(blob.Metadata[PkgConsts.ProjectUrl]);
             }
             package.RequireLicenseAcceptance = blob.Metadata[PkgConsts.RequireLicenseAcceptance].ToBool();
-            package.DevelopmentDependency = blob.Metadata["DevelopmentDependency"].ToBool();
-            if (blob.Metadata.ContainsKey("Description"))
+            package.DevelopmentDependency = blob.Metadata[PkgConsts.DevelopmentDependency].ToBool();
+            if (blob.Metadata.ContainsKey(PkgConsts.Description))
             {
-                package.Description = blob.Metadata["Description"];
+                package.Description = blob.Metadata[PkgConsts.Description];
             }
-            if (blob.Metadata.ContainsKey("Summary"))
+            if (blob.Metadata.ContainsKey(PkgConsts.Summary))
             {
-                package.Summary = blob.Metadata["Summary"];
+                package.Summary = blob.Metadata[PkgConsts.Summary];
             }
-            if (blob.Metadata.ContainsKey("ReleaseNotes"))
+            if (blob.Metadata.ContainsKey(PkgConsts.ReleaseNotes))
             {
-                package.ReleaseNotes = blob.Metadata["ReleaseNotes"];
+                package.ReleaseNotes = blob.Metadata[PkgConsts.ReleaseNotes];
             }
-            if (blob.Metadata.ContainsKey("Tags"))
+            if (blob.Metadata.ContainsKey(PkgConsts.Tags))
             {
-                package.Tags = blob.Metadata["Tags"];
+                package.Tags = blob.Metadata[PkgConsts.Tags];
             }
-            var dependencySetContent = blob.Metadata["Dependencies"];
+            var dependencySetContent = blob.Metadata[PkgConsts.Dependencies];
             dependencySetContent = this.Base64Decode(dependencySetContent);
             package.DependencySets = dependencySetContent
                 .FromJson<IEnumerable<AzurePackageDependencySet>>()
                 .Select(x => new PackageDependencySet(x.TargetFramework, x.Dependencies));
             package.IsAbsoluteLatestVersion = blob.Metadata[PkgConsts.IsAbsoluteLatestVersion].ToBool();
             package.IsLatestVersion = blob.Metadata[PkgConsts.IsLatestVersion].ToBool();
-            if (blob.Metadata.ContainsKey("MinClientVersion"))
+            if (blob.Metadata.ContainsKey(PkgConsts.MinClientVersion))
             {
-                package.MinClientVersion = new Version(blob.Metadata["MinClientVersion"]);
+                package.MinClientVersion = new Version(blob.Metadata[PkgConsts.MinClientVersion]);
             }
             package.Listed = blob.Metadata[PkgConsts.Listed].ToBool();
 
@@ -105,26 +105,26 @@ namespace Nuget.Server.AzureStorage.Domain.Services
                 blob.Metadata[PkgConsts.ProjectUrl] = package.ProjectUrl.AbsoluteUri;
             }
             blob.Metadata[PkgConsts.RequireLicenseAcceptance] = package.RequireLicenseAcceptance.ToString();
-            blob.Metadata["DevelopmentDependency"] = package.DevelopmentDependency.ToString();
-            blob.Metadata["Description"] = package.Description;
+            blob.Metadata[PkgConsts.DevelopmentDependency] = package.DevelopmentDependency.ToString();
+            blob.Metadata[PkgConsts.Description] = package.Description;
             if (!string.IsNullOrEmpty(package.Summary))
             {
-                blob.Metadata["Summary"] = package.Summary;
+                blob.Metadata[PkgConsts.Summary] = package.Summary;
             }
             if (!string.IsNullOrEmpty(package.ReleaseNotes))
             {
-                blob.Metadata["ReleaseNotes"] = package.ReleaseNotes;
+                blob.Metadata[PkgConsts.ReleaseNotes] = package.ReleaseNotes;
             }
             if (!string.IsNullOrEmpty(package.Tags))
             {
-                blob.Metadata["Tags"] = package.Tags;
+                blob.Metadata[PkgConsts.Tags] = package.Tags;
             }
-            blob.Metadata["Dependencies"] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
+            blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
             blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();
             blob.Metadata[PkgConsts.IsLatestVersion] = package.IsLatestVersion.ToString();
             if (package.MinClientVersion != null)
             {
-                blob.Metadata["MinClientVersion"] =  package.MinClientVersion.ToString();
+                blob.Metadata[PkgConsts.MinClientVersion] =  package.MinClientVersion.ToString();
             }
 
             blob.Metadata[PkgConsts.Listed] = package.Listed.ToString();
