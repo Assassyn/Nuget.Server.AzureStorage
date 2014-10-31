@@ -1,8 +1,34 @@
-/*.suo
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+.idea
 
-/Sources/Nuget.Server.TestInstance/bin
-/Sources/Nuget.Server.TestInstance/obj
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+[Bb]in/
+[Oo]bj/
+csx/
 
-/Sources/Nuget.Server.AzureStorage/bin
-/Sources/Nuget.Server.AzureStorage/obj
+
 /NUget package push
+
+# Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
+!packages/**
+!tools/**
+
+
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
