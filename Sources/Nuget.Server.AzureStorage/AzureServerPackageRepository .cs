@@ -193,13 +193,13 @@ namespace Nuget.Server.AzureStorage
         /// <param name="exists">if set to <c>true</c> [exists].</param>
         private void UpdateContainerMetadata(IPackage package, CloudBlobContainer container, bool exists)
         {
-            container.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
+            container.Metadata[Constants.LatestModificationDate] = DateTimeOffset.Now.ToString();
             if (!exists)
             {
-                container.Metadata[AzurePropertiesConstants.Created] = DateTimeOffset.Now.ToString();
+                container.Metadata[Constants.Created] = DateTimeOffset.Now.ToString();
             }
-            container.Metadata[AzurePropertiesConstants.LastUploadedVersion] = package.Version.ToString();
-            container.Metadata[AzurePropertiesConstants.PackageId] = package.Id;
+            container.Metadata[Constants.LastUploadedVersion] = package.Version.ToString();
+            container.Metadata[Constants.PackageId] = package.Id;
             container.SetMetadata();
         }
 
@@ -210,7 +210,7 @@ namespace Nuget.Server.AzureStorage
         /// <param name="blob">The BLOB.</param>
         private void UpdateBlobMetadata(IPackage package, CloudBlockBlob blob)
         {
-            blob.Metadata[AzurePropertiesConstants.LatestModificationDate] = DateTimeOffset.Now.ToString();
+            blob.Metadata[Constants.LatestModificationDate] = DateTimeOffset.Now.ToString();
             var azurePackage = Mapper.Map<AzurePackage>(package);
             //blob.Metadata[AzurePropertiesConstants.Package] = JsonConvert.SerializeObject(azurePackage);
             this.packageSerializer.SaveToMetadata(azurePackage, blob);
@@ -225,7 +225,7 @@ namespace Nuget.Server.AzureStorage
         private CloudBlockBlob GetLatestBlob(CloudBlobContainer container)
         {
             container.FetchAttributes();
-            var latest = container.Metadata[AzurePropertiesConstants.LastUploadedVersion];
+            var latest = container.Metadata[Constants.LastUploadedVersion];
 
             return container.GetBlockBlobReference(latest);
         }

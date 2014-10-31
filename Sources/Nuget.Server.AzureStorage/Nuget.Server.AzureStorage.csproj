@@ -114,7 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzurePropertiesConstants.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="AzureServerPackageRepository .cs" />
     <Compile Include="Bootstraper.cs" />
     <Compile Include="Domain.Services\AzurePackageSerializer.cs" />
