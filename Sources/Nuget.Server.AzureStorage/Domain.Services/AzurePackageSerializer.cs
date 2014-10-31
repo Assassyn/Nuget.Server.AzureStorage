@@ -22,33 +22,33 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             blob.FetchAttributes();
             var package = new AzurePackage();
 
-            package.Id = blob.Metadata["Id"];
-            package.Version = new SemanticVersion(blob.Metadata["Version"]);
-            if (blob.Metadata.ContainsKey("Title"))
+            package.Id = blob.Metadata[PkgConsts.Id];
+            package.Version = new SemanticVersion(blob.Metadata[PkgConsts.Version]);
+            if (blob.Metadata.ContainsKey(PkgConsts.Title))
             {
-                package.Title = blob.Metadata["Title"];
+                package.Title = blob.Metadata[PkgConsts.Title];
             }
-            if (blob.Metadata.ContainsKey("Authors"))
+            if (blob.Metadata.ContainsKey(PkgConsts.Authors))
             {
-                package.Authors = blob.Metadata["Authors"].Split(',');
+                package.Authors = blob.Metadata[PkgConsts.Authors].Split(',');
             }
-            if (blob.Metadata.ContainsKey("Owners"))
+            if (blob.Metadata.ContainsKey(PkgConsts.Owners))
             {
-                package.Owners = blob.Metadata["Owners"].Split(',');
+                package.Owners = blob.Metadata[PkgConsts.Owners].Split(',');
             }
-            if (blob.Metadata.ContainsKey("IconUrl"))
+            if (blob.Metadata.ContainsKey(PkgConsts.IconUrl))
             {
-                package.IconUrl = new Uri(blob.Metadata["IconUrl"]);
+                package.IconUrl = new Uri(blob.Metadata[PkgConsts.IconUrl]);
             }
-            if (blob.Metadata.ContainsKey("LicenseUrl"))
+            if (blob.Metadata.ContainsKey(PkgConsts.LicenseUrl))
             {
-                package.LicenseUrl = new Uri(blob.Metadata["LicenseUrl"]);
+                package.LicenseUrl = new Uri(blob.Metadata[PkgConsts.LicenseUrl]);
             }
-            if (blob.Metadata.ContainsKey("ProjectUrl"))
+            if (blob.Metadata.ContainsKey(PkgConsts.ProjectUrl))
             {
-                package.ProjectUrl = new Uri(blob.Metadata["ProjectUrl"]);
+                package.ProjectUrl = new Uri(blob.Metadata[PkgConsts.ProjectUrl]);
             }
-            package.RequireLicenseAcceptance = blob.Metadata["RequireLicenseAcceptance"].ToBool();
+            package.RequireLicenseAcceptance = blob.Metadata[PkgConsts.RequireLicenseAcceptance].ToBool();
             package.DevelopmentDependency = blob.Metadata["DevelopmentDependency"].ToBool();
             if (blob.Metadata.ContainsKey("Description"))
             {
@@ -84,27 +84,27 @@ namespace Nuget.Server.AzureStorage.Domain.Services
 
         public void SaveToMetadata(AzurePackage package, CloudBlockBlob blob)
         {
-            blob.Metadata["Id"] = package.Id;
-            blob.Metadata["Version"] = package.Version.ToString();
+            blob.Metadata[PkgConsts.Id] = package.Id;
+            blob.Metadata[PkgConsts.Version] = package.Version.ToString();
             if (!string.IsNullOrEmpty(package.Title))
             {
-                blob.Metadata["Title"] = package.Title;
+                blob.Metadata[PkgConsts.Title] = package.Title;
             }
-            blob.Metadata["Authors"] = string.Join(",", package.Authors);
-            blob.Metadata["Owners"] = string.Join(",", package.Owners);
+            blob.Metadata[PkgConsts.Authors] = string.Join(",", package.Authors);
+            blob.Metadata[PkgConsts.Owners] = string.Join(",", package.Owners);
             if (package.IconUrl != null)
             {
-                blob.Metadata["IconUrl"] = package.IconUrl.AbsoluteUri;
+                blob.Metadata[PkgConsts.IconUrl] = package.IconUrl.AbsoluteUri;
             }
             if (package.LicenseUrl != null)
             {
-                blob.Metadata["LicenseUrl"] = package.LicenseUrl.AbsoluteUri;
+                blob.Metadata[PkgConsts.LicenseUrl] = package.LicenseUrl.AbsoluteUri;
             }
             if (package.ProjectUrl != null)
             {
-                blob.Metadata["ProjectUrl"] = package.ProjectUrl.AbsoluteUri;
+                blob.Metadata[PkgConsts.ProjectUrl] = package.ProjectUrl.AbsoluteUri;
             }
-            blob.Metadata["RequireLicenseAcceptance"] = package.RequireLicenseAcceptance.ToString();
+            blob.Metadata[PkgConsts.RequireLicenseAcceptance] = package.RequireLicenseAcceptance.ToString();
             blob.Metadata["DevelopmentDependency"] = package.DevelopmentDependency.ToString();
             blob.Metadata["Description"] = package.Description;
             if (!string.IsNullOrEmpty(package.Summary))
