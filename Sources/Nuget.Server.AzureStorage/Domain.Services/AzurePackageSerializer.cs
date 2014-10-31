@@ -71,13 +71,13 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             package.DependencySets = dependencySetContent
                 .FromJson<IEnumerable<AzurePackageDependencySet>>()
                 .Select(x => new PackageDependencySet(x.TargetFramework, x.Dependencies));
-            package.IsAbsoluteLatestVersion = blob.Metadata["IsAbsoluteLatestVersion"].ToBool();
-            package.IsLatestVersion = blob.Metadata["IsLatestVersion"].ToBool();
+            package.IsAbsoluteLatestVersion = blob.Metadata[PkgConsts.IsAbsoluteLatestVersion].ToBool();
+            package.IsLatestVersion = blob.Metadata[PkgConsts.IsLatestVersion].ToBool();
             if (blob.Metadata.ContainsKey("MinClientVersion"))
             {
                 package.MinClientVersion = new Version(blob.Metadata["MinClientVersion"]);
             }
-            package.Listed = blob.Metadata["Listed"].ToBool();
+            package.Listed = blob.Metadata[PkgConsts.Listed].ToBool();
 
             return package;
         }
@@ -120,14 +120,14 @@ namespace Nuget.Server.AzureStorage.Domain.Services
                 blob.Metadata["Tags"] = package.Tags;
             }
             blob.Metadata["Dependencies"] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
-            blob.Metadata["IsAbsoluteLatestVersion"] = package.IsAbsoluteLatestVersion.ToString();
-            blob.Metadata["IsLatestVersion"] = package.IsLatestVersion.ToString();
+            blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();
+            blob.Metadata[PkgConsts.IsLatestVersion] = package.IsLatestVersion.ToString();
             if (package.MinClientVersion != null)
             {
                 blob.Metadata["MinClientVersion"] =  package.MinClientVersion.ToString();
             }
-            
-            blob.Metadata["Listed"] = package.Listed.ToString();
+
+            blob.Metadata[PkgConsts.Listed] = package.Listed.ToString();
 
             blob.SetMetadata();
         }

@@ -46,6 +46,14 @@
         public const string PackageId = "PackageId";
     }
 
+    public static class PackageConsts
+    {
+        public const string IsAbsoluteLatestVersion = "IsAbsoluteLatestVersion";
+        public const string IsLatestVersion = "IsLatestVersion";
+        public const string Listed = "Listed";
+        public const string Published = "Published";
+    }
+
     public static class NsasConstants
     {
         public const string ContainerPrefix = "NugetAzure-";
