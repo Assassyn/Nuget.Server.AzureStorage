@@ -143,6 +143,7 @@
     <Content Include="packages.config" />
     <None Include="Properties\PublishProfiles\nuget-ait - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\nuget-ait - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\ZSNugetServer.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

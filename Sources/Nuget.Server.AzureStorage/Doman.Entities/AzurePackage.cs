@@ -16,23 +16,21 @@ namespace Nuget.Server.AzureStorage.Doman.Entities
 
     public sealed class AzurePackage : IPackage
     {
-        public AzurePackage()
-        {
-        }
+        public AzurePackage() {}
 
         public IEnumerable<IPackageFile> GetFiles()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public Stream GetStream()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public IEnumerable<FrameworkName> GetSupportedFrameworks()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; set; }

@@ -15,7 +15,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
     using System.Collections.Generic;
     using System.Linq;
 
-    internal sealed class AzurePackageSerializer : IAzurePackageSerializer
+    public class AzurePackageSerializer : IAzurePackageSerializer
     {
         public AzurePackage ReadFromMetadata(CloudBlockBlob blob)
         {

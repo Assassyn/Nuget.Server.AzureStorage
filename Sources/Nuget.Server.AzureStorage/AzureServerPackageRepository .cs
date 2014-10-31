@@ -46,6 +46,16 @@ namespace Nuget.Server.AzureStorage
             this.storageAccount = CloudStorageAccount.Parse(azureConnectionString);
             this.blobClient = this.storageAccount.CreateCloudBlobClient();
         }
+        public AzureServerPackageRepository(IPackageLocator packageLocator, 
+                                            IAzurePackageSerializer packageSerializer,
+                                            CloudStorageAccount storageAccount)
+        {
+            this.packageLocator = packageLocator;
+            this.packageSerializer = packageSerializer;
+
+            this.storageAccount = storageAccount;
+            this.blobClient = this.storageAccount.CreateCloudBlobClient();
+        }
 
         /// <summary>
         /// Gets the metadata package.
@@ -54,6 +64,7 @@ namespace Nuget.Server.AzureStorage
         /// <returns></returns>
         public Package GetMetadataPackage(IPackage package)
         {
+            //var pkg = new Package(package, new DerivedPackageData());
             return new Package(package, new DerivedPackageData());
         }
 
@@ -87,6 +98,7 @@ namespace Nuget.Server.AzureStorage
         /// <exception cref="System.NotImplementedException"></exception>
         public IQueryable<IPackage> Search(string searchTerm, IEnumerable<string> targetFrameworks, bool allowPrereleaseVersions)
         {
+            var packages = this.GetPackages().ToList();
             return 
                 this.GetPackages()
                 .Find(searchTerm)

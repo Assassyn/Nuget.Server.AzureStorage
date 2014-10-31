@@ -9,7 +9,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
 {
     using NuGet;
 
-    internal sealed class AzurePackageLocator : IPackageLocator
+    public class AzurePackageLocator : IPackageLocator
     {
         public string GetContainerName(IPackage package)
         {
