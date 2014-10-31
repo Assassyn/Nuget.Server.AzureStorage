@@ -77,6 +77,10 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             {
                 package.MinClientVersion = new Version(blob.Metadata[PkgConsts.MinClientVersion]);
             }
+            if (blob.Metadata.ContainsKey(PkgConsts.Published))
+            {
+                package.Published = DateTimeOffset.Parse(blob.Metadata[PkgConsts.Published]);
+            }
             package.Listed = blob.Metadata[PkgConsts.Listed].ToBool();
 
             return package;
@@ -125,6 +129,10 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             if (package.MinClientVersion != null)
             {
                 blob.Metadata[PkgConsts.MinClientVersion] =  package.MinClientVersion.ToString();
+            }
+            if (package.Published != null)
+            {
+                blob.Metadata[PkgConsts.Published] = package.Published.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
 
             blob.Metadata[PkgConsts.Listed] = package.Listed.ToString();
