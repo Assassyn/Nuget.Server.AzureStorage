@@ -8,7 +8,7 @@
         /// <summary>
         /// The created
         /// </summary>
-        public const string Created = "Creted";
+        public const string Created = "Created";
 
         /// <summary>
         /// The latest modification date
