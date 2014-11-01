@@ -38,6 +38,7 @@
         public const string Published = "Published";
         public const string Language = "Language";
         public const string Copyright = "Copyright";
+        public const string ReportAbuseUrl = "ReportAbuseUrl";
     }
 
 

@@ -49,6 +49,10 @@
             {
                 package.Copyright = blob.Metadata[PkgConsts.Copyright];
             }
+            if (blob.Metadata.ContainsKey(PkgConsts.ReportAbuseUrl))
+            {
+                package.ReportAbuseUrl = new Uri(blob.Metadata[PkgConsts.ReportAbuseUrl]);
+            }
             package.RequireLicenseAcceptance = blob.Metadata[PkgConsts.RequireLicenseAcceptance].ToBool();
             package.DevelopmentDependency = blob.Metadata[PkgConsts.DevelopmentDependency].ToBool();
             if (blob.Metadata.ContainsKey(PkgConsts.Description))
@@ -131,6 +135,10 @@
             if (!string.IsNullOrEmpty(package.Copyright))
             {
                 blob.Metadata[PkgConsts.Copyright] = package.Copyright;
+            }
+            if (package.ReportAbuseUrl != null)
+            {
+                blob.Metadata[PkgConsts.ReportAbuseUrl] = package.ReportAbuseUrl.ToString();
             }
             blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
             blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();
