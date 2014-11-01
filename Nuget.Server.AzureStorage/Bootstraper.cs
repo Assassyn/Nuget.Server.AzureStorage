@@ -14,6 +14,11 @@
             NinjectBootstrapper.Kernel.Bind<IPackageLocator>().To<AzurePackageLocator>();
             NinjectBootstrapper.Kernel.Bind<IAzurePackageSerializer>().To<AzurePackageSerializer>();
 
+            SetUpMapper();
+        }
+
+        public static void SetUpMapper()
+        {
             Mapper.CreateMap<IPackage, AzurePackage>();
             Mapper.CreateMap<PackageDependencySet, AzurePackageDependencySet>();
         }

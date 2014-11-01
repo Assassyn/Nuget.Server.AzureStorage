@@ -24,6 +24,7 @@ namespace NugetServer.AzureStorage.Tests
         [SetUp]
         public void SetUp()
         {
+            Bootstraper.SetUpMapper();
             Mapper.CreateMap<TestPackage, AzurePackage>();
             _storageAccount = CloudStorageAccount.Parse("UseDevelopmentStorage=true;");
             _storageAccount.DeleteAllBlobContainers(NsasConstants.ContainerPrefix);
@@ -79,6 +80,7 @@ namespace NugetServer.AzureStorage.Tests
                 Assert.AreEqual(package.Id,reloadedPackage.Id);
                 Assert.AreEqual(package.Version.ToString(), reloadedPackage.Version.ToString());
                 Assert.AreEqual(package.Title,reloadedPackage.Title);
+                Assert.AreEqual(package.Authors.Count(), reloadedPackage.Authors.Count());
                 Assert.True(package.Authors.All(x=>reloadedPackage.Authors.Contains(x)));
                 Assert.True(package.Owners.All(x => reloadedPackage.Owners.Contains(x)));
                 Assert.AreEqual(package.RequireLicenseAcceptance, reloadedPackage.RequireLicenseAcceptance);
@@ -89,7 +91,9 @@ namespace NugetServer.AzureStorage.Tests
                 Assert.AreEqual(package.ReleaseNotes, reloadedPackage.ReleaseNotes);
                 Assert.AreEqual(package.Language, reloadedPackage.Language);
                 Assert.AreEqual(package.Copyright, reloadedPackage.Copyright);
+                Assert.AreEqual(package.FrameworkAssemblies.Count(), reloadedPackage.FrameworkAssemblies.Count());
                 Assert.True(package.FrameworkAssemblies.All(x => reloadedPackage.FrameworkAssemblies.Contains(x)));
+                Assert.AreEqual(package.PackageAssemblyReferences.Count,reloadedPackage.PackageAssemblyReferences.Count);
                 Assert.True(package.PackageAssemblyReferences.All(x => reloadedPackage.PackageAssemblyReferences.Contains(x)));
                 Assert.True(package.DependencySets.All(x => reloadedPackage.DependencySets.Contains(x)));
                 Assert.AreEqual(package.Version.ToString(), reloadedPackage.Version.ToString());
@@ -100,10 +104,36 @@ namespace NugetServer.AzureStorage.Tests
                 Assert.AreEqual(package.IsAbsoluteLatestVersion, reloadedPackage.IsAbsoluteLatestVersion);
                 Assert.AreEqual(package.Listed, reloadedPackage.Listed);
                 Assert.True(package.AssemblyReferences.All(x => reloadedPackage.AssemblyReferences.Contains(x)));
-
-
             }
-            
+        }
+
+        [Test]
+        public void Search_SinglePackage_EmptyString()
+        {
+            using (var fileStream = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
+            {
+                var package = TestPackage.MakePackage(fileStream);
+                _azureServerPackageRepository.AddPackage(package);
+
+                var searchedPackages = _azureServerPackageRepository.Search("", new List<string>(), true);
+                Assert.AreEqual(1,searchedPackages.Count());
+            }
+        }
+
+        [Test]
+        public void GetMetadataPackage()
+        {
+            using (var fileStream = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
+            {
+                var package = TestPackage.MakePackage(fileStream);
+                _azureServerPackageRepository.AddPackage(package);
+
+                var reloadedPackage = _azureServerPackageRepository.GetPackages().Single();
+
+                var metadataPackage = _azureServerPackageRepository.GetMetadataPackage(reloadedPackage);
+
+                Assert.NotNull(metadataPackage);
+            }
         }
     }
 }

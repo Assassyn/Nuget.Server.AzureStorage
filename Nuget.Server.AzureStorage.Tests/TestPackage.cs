@@ -77,9 +77,24 @@ namespace NugetServer.AzureStorage.Tests
                 Language = "Language",
                 Tags = "Tags",
                 Copyright = "Copyright",
-                FrameworkAssemblies = new List<FrameworkAssemblyReference>(),
-                PackageAssemblyReferences = new Collection<PackageReferenceSet>(),
-                DependencySets = new List<PackageDependencySet>(),
+                FrameworkAssemblies = new List<FrameworkAssemblyReference>()
+                {
+                    new FrameworkAssemblyReference("myassembly",new List<FrameworkName>()
+                    {
+                        new FrameworkName(".NETFramework,Version=v4.0,Profile=Client")
+                    })
+                },
+                PackageAssemblyReferences = new Collection<PackageReferenceSet>()
+                {
+                    new PackageReferenceSet(new FrameworkName(".NETFramework,Version=v4.0,Profile=Client"),new List<string>(){"references_a","Reference_b"})
+                },
+                DependencySets = new List<PackageDependencySet>()
+                {
+                    new PackageDependencySet(new FrameworkName(".NETFramework,Version=v4.0,Profile=Client"),new List<PackageDependency>()
+                    {
+                        new PackageDependency("id_12341234",new VersionSpec())
+                    })
+                },
                 MinClientVersion = new Version("1.2.3"),
                 ReportAbuseUrl = new Uri("http://abuseurl.com"),
                 DownloadCount = 12345432,
