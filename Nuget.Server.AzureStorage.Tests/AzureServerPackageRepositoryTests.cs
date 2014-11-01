@@ -95,7 +95,13 @@ namespace NugetServer.AzureStorage.Tests
                 Assert.AreEqual(package.Version.ToString(), reloadedPackage.Version.ToString());
                 Assert.AreEqual(package.ReportAbuseUrl.ToString(), reloadedPackage.ReportAbuseUrl.ToString());
                 Assert.AreEqual(package.Published.ToString(), reloadedPackage.Published.ToString());
-                Assert.AreEqual(package.Id, reloadedPackage.Id);
+                Assert.AreEqual(package.DownloadCount, reloadedPackage.DownloadCount);
+                Assert.AreEqual(package.IsLatestVersion, reloadedPackage.IsLatestVersion);
+                Assert.AreEqual(package.IsAbsoluteLatestVersion, reloadedPackage.IsAbsoluteLatestVersion);
+                Assert.AreEqual(package.Listed, reloadedPackage.Listed);
+                Assert.True(package.AssemblyReferences.All(x => reloadedPackage.AssemblyReferences.Contains(x)));
+
+
             }
             
         }

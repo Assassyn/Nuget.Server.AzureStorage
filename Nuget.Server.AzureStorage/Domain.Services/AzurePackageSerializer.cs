@@ -53,6 +53,7 @@
             {
                 package.ReportAbuseUrl = new Uri(blob.Metadata[PkgConsts.ReportAbuseUrl]);
             }
+            package.DownloadCount = Convert.ToInt32(blob.Metadata[PkgConsts.DownloadCount]);
             package.RequireLicenseAcceptance = blob.Metadata[PkgConsts.RequireLicenseAcceptance].ToBool();
             package.DevelopmentDependency = blob.Metadata[PkgConsts.DevelopmentDependency].ToBool();
             if (blob.Metadata.ContainsKey(PkgConsts.Description))
@@ -140,6 +141,7 @@
             {
                 blob.Metadata[PkgConsts.ReportAbuseUrl] = package.ReportAbuseUrl.ToString();
             }
+            blob.Metadata[PkgConsts.DownloadCount] = package.DownloadCount.ToString();
             blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
             blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();
             blob.Metadata[PkgConsts.IsLatestVersion] = package.IsLatestVersion.ToString();
