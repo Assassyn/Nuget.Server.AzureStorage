@@ -36,6 +36,8 @@
         public const string MinClientVersion = "MinClientVersion";
         public const string Listed = "Listed";
         public const string Published = "Published";
+        public const string Language = "Language";
+        public const string Copyright = "Copyright";
     }
 
 

@@ -48,6 +48,14 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             {
                 package.ProjectUrl = new Uri(blob.Metadata[PkgConsts.ProjectUrl]);
             }
+            if (blob.Metadata.ContainsKey(PkgConsts.Language))
+            {
+                package.Language = blob.Metadata[PkgConsts.Language];
+            }
+            if (blob.Metadata.ContainsKey(PkgConsts.Copyright))
+            {
+                package.Copyright = blob.Metadata[PkgConsts.Copyright];
+            }
             package.RequireLicenseAcceptance = blob.Metadata[PkgConsts.RequireLicenseAcceptance].ToBool();
             package.DevelopmentDependency = blob.Metadata[PkgConsts.DevelopmentDependency].ToBool();
             if (blob.Metadata.ContainsKey(PkgConsts.Description))
@@ -122,6 +130,14 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             if (!string.IsNullOrEmpty(package.Tags))
             {
                 blob.Metadata[PkgConsts.Tags] = package.Tags;
+            }
+            if (!string.IsNullOrEmpty(package.Language))
+            {
+                blob.Metadata[PkgConsts.Language] = package.Language;
+            }
+            if (!string.IsNullOrEmpty(package.Copyright))
+            {
+                blob.Metadata[PkgConsts.Copyright] = package.Copyright;
             }
             blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
             blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();
