@@ -1,10 +1,4 @@
-﻿// <copyright file="Bootstrapper.cs" company="A-IT">
-//     Copyright (c) A-IT. All rights reserved.
-// </copyright>
-// <author>Szymon M Sasin</author>
-//-----------------------------------------------------------------------
-
-namespace Nuget.Server.AzureStorage
+﻿namespace Nuget.Server.AzureStorage
 {
     using AutoMapper;
     using Nuget.Server.AzureStorage.Domain.Services;

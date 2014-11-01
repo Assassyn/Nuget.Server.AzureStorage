@@ -1,11 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="PackageLocator.cs" company="A-IT">
-//     Copyright (c) A-IT. All rights reserved.
-// </copyright>
-// <author>Szymon M Sasin</author>
-//-----------------------------------------------------------------------
-
-namespace Nuget.Server.AzureStorage.Domain.Services
+﻿namespace Nuget.Server.AzureStorage.Domain.Services
 {
     using NuGet;
 

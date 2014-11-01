@@ -1,11 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="AzurePackageSerializer.cs" company="A-IT">
-//     Copyright (c) A-IT. All rights reserved.
-// </copyright>
-// <author>Szymon M Sasin</author>
-//-----------------------------------------------------------------------
-
-namespace Nuget.Server.AzureStorage.Domain.Services
+﻿namespace Nuget.Server.AzureStorage.Domain.Services
 {
     using AutoMapper;
     using Microsoft.WindowsAzure.Storage.Blob;

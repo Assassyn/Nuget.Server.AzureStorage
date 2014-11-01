@@ -1,11 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="PackageMetadata.cs" company="Aranea It Ltd">
-//     Copyright (c) Aranea It Ltd. All rights reserved.
-// </copyright>
-// <author>Szymon M Sasin</author>
-//-----------------------------------------------------------------------
-
-namespace Nuget.Server.AzureStorage
+﻿namespace Nuget.Server.AzureStorage
 {
     using NuGet;
     using System;

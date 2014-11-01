@@ -1,11 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="JsonExtension.cs" company="A-IT">
-//     Copyright (c) A-IT. All rights reserved.
-// </copyright>
-// <author>Szymon M Sasin</author>
-//-----------------------------------------------------------------------
-
-namespace Nuget.Server.AzureStorage
+﻿namespace Nuget.Server.AzureStorage
 {
     using Newtonsoft.Json;
     using System;

@@ -1,11 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="AzurePackageAssemblyReference.cs" company="A-IT">
-//     Copyright (c) A-IT. All rights reserved.
-// </copyright>
-// <author>Szymon M Sasin</author>
-//-----------------------------------------------------------------------
-
-namespace Nuget.Server.AzureStorage.Doman.Entities
+﻿namespace Nuget.Server.AzureStorage.Doman.Entities
 {
     using NuGet;
     using System;
