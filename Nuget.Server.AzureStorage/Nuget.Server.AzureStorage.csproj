@@ -117,9 +117,11 @@
     <Compile Include="Bootstraper.cs" />
     <Compile Include="Domain.Services\AzurePackageSerializer.cs" />
     <Compile Include="Domain.Services\IAzurePackageSerializer.cs" />
+    <Compile Include="Doman.Entities\AzureFrameworkAssemblyReference.cs" />
     <Compile Include="Doman.Entities\AzurePackage.cs" />
     <Compile Include="Doman.Entities\AzurePackageAssemblyReference.cs" />
     <Compile Include="Doman.Entities\AzurePackageDependencySet.cs" />
+    <Compile Include="Doman.Entities\AzurePackageReferenceSet.cs" />
     <Compile Include="Doman.Entities\AzureVersionSpec.cs" />
     <Compile Include="ObjectExtension.cs" />
     <Compile Include="PackageMetadata.cs" />

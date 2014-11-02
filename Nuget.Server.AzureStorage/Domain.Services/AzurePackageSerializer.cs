@@ -74,14 +74,27 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             {
                 package.Tags = blob.Metadata[PkgConsts.Tags];
             }
-            var dependencySetContent = blob.Metadata[PkgConsts.Dependencies];
-            dependencySetContent = Base64Decode(dependencySetContent);
+            var dependencySetContent = Base64Decode(blob.Metadata[PkgConsts.Dependencies]);
+
             package.DependencySets = dependencySetContent
                 .FromJson<IEnumerable<AzurePackageDependencySet>>()
                 .Select(x => new PackageDependencySet(x.TargetFramework, x.Dependencies));
 
-            package.FrameworkAssemblies = blob.Metadata[PkgConsts.FrameworkAssemblies].FromJson<IEnumerable<FrameworkAssemblyReference>>();
-            package.PackageAssemblyReferences = blob.Metadata[PkgConsts.PackageAssemblyReferences].FromJson<Collection<PackageReferenceSet>>();
+            package.FrameworkAssemblies = blob.Metadata[PkgConsts.FrameworkAssemblies]
+                .FromJson<IEnumerable<AzureFrameworkAssemblyReference>>()
+                .Select(x=>x.GetFrameworkAssemblyReference())
+                .ToList();
+            
+            package.PackageAssemblyReferences = blob.Metadata[PkgConsts.PackageAssemblyReferences]
+                .FromJson<Collection<AzurePackageReferenceSet>>()
+                .Select(x=>x.GetReferenceSet())
+                .ToList();
+
+            package.AssemblyReferences = blob.Metadata[PkgConsts.AssemblyReferences]
+                .FromJson<IEnumerable<AzureAssemblyReference>>()
+                .Select(x => x.GetAssemblyReference())
+                .ToList();
+
 
             package.IsAbsoluteLatestVersion = blob.Metadata[PkgConsts.IsAbsoluteLatestVersion].ToBool();
             package.IsLatestVersion = blob.Metadata[PkgConsts.IsLatestVersion].ToBool();
@@ -149,8 +162,12 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             }
             blob.Metadata[PkgConsts.DownloadCount] = package.DownloadCount.ToString();
 
-            blob.Metadata[PkgConsts.FrameworkAssemblies] = package.FrameworkAssemblies.ToJson();
-            blob.Metadata[PkgConsts.PackageAssemblyReferences] = package.PackageAssemblyReferences.ToJson();
+            blob.Metadata[PkgConsts.FrameworkAssemblies] = package.FrameworkAssemblies
+                .Select(x=>new AzureFrameworkAssemblyReference(x))
+                .ToJson();
+            blob.Metadata[PkgConsts.PackageAssemblyReferences] = package.PackageAssemblyReferences
+                .Select(x=>new AzurePackageReferenceSet(x))
+                .ToJson();
             blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
 
             blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();

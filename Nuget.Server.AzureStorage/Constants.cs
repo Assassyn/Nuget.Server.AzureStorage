@@ -42,6 +42,7 @@
         public const string DownloadCount = "DownloadCount";
         public const string FrameworkAssemblies = "FrameworkAssemblies";
         public const string PackageAssemblyReferences = "PackageAssemblyReferences";
+        public const string AssemblyReferences = "AssemblyReferences";
     }
 
 
