@@ -57,12 +57,12 @@ namespace NugetServer.AzureStorage.Tests
         public DateTimeOffset? Published { get; set; }
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; set; }
 
-        public static TestPackage MakePackage(FileStream fileStream)
+        public static TestPackage MakePackage(string id, string version, FileStream fileStream)
         {
             return new TestPackage()
             {
-                Id = "id_1234",
-                Version = new SemanticVersion("1.0.0"),
+                Id = id,
+                Version = new SemanticVersion(version),
                 Title = "Title",
                 Authors = new List<string>(){"auth_1","auth_b"},
                 Owners = new List<string>{"ownera","ownerb"},

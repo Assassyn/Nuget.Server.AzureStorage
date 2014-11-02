@@ -54,7 +54,7 @@ namespace NugetServer.AzureStorage.Tests
         {
             using (var fileStream = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
             {
-                var package = TestPackage.MakePackage(fileStream);
+                var package = TestPackage.MakePackage("angular","1.2.26",fileStream);
                 _azureServerPackageRepository.AddPackage(package);
                 //Assert.AreEqual(0, packages.Count());
             }
@@ -71,7 +71,7 @@ namespace NugetServer.AzureStorage.Tests
         {
             using (var fileStream = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
             {
-                var package = TestPackage.MakePackage(fileStream);
+                var package = TestPackage.MakePackage("angular","1.2.26",fileStream);
                 _azureServerPackageRepository.AddPackage(package);
 
                 var packages = _azureServerPackageRepository.GetPackages();
@@ -111,31 +111,30 @@ namespace NugetServer.AzureStorage.Tests
         }
 
         [Test]
+        public void GetPackages_TwoVersions()
+        {
+            using (var fileStream1225 = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
+            using (var fileStream1226 = new FileStream("../../TestFiles/angularjs.1.2.26.nupkg", FileMode.Open))
+            {
+                _azureServerPackageRepository.AddPackage(TestPackage.MakePackage("angular","1.2.25",fileStream1225));
+                _azureServerPackageRepository.AddPackage(TestPackage.MakePackage("angular", "1.2.26", fileStream1226));
+
+                var reloadedPackage = _azureServerPackageRepository.GetPackages().ToList();
+
+                Assert.AreEqual(2, reloadedPackage.Count());
+            }
+        }
+        
+        [Test]
         public void Search_SinglePackage_EmptyString()
         {
             using (var fileStream = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
             {
-                var package = TestPackage.MakePackage(fileStream);
+                var package = TestPackage.MakePackage("angular","1.2.26",fileStream);
                 _azureServerPackageRepository.AddPackage(package);
 
                 var searchedPackages = _azureServerPackageRepository.Search("", new List<string>(), true);
                 Assert.AreEqual(1,searchedPackages.Count());
-            }
-        }
-
-        [Test]
-        public void GetMetadataPackage()
-        {
-            using (var fileStream = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
-            {
-                var package = TestPackage.MakePackage(fileStream);
-                _azureServerPackageRepository.AddPackage(package);
-
-                var reloadedPackage = _azureServerPackageRepository.GetPackages().Single();
-
-                var metadataPackage = _azureServerPackageRepository.GetMetadataPackage(reloadedPackage);
-
-                Assert.NotNull(metadataPackage);
             }
         }
     }
