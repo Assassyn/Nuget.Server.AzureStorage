@@ -19,10 +19,10 @@
     /// </summary>
     public class AzureServerPackageRepository : IServerPackageRepository
     {
-        private readonly CloudStorageAccount storageAccount;
-        private readonly CloudBlobClient blobClient;
-        private readonly IPackageLocator packageLocator;
-        private readonly IAzurePackageSerializer packageSerializer;
+        private readonly CloudStorageAccount _storageAccount;
+        private readonly CloudBlobClient _blobClient;
+        private readonly IPackageLocator _packageLocator;
+        private readonly IAzurePackageSerializer _packageSerializer;
 
         public PackageSaveModes PackageSaveMode { get; set; }
 
@@ -33,21 +33,21 @@
         /// <param name="packageSerializer">The package serializer.</param>
         public AzureServerPackageRepository(IPackageLocator packageLocator, IAzurePackageSerializer packageSerializer)
         {
-            this.packageLocator = packageLocator;
-            this.packageSerializer = packageSerializer;
+            _packageLocator = packageLocator;
+            _packageSerializer = packageSerializer;
             var azureConnectionString = CloudConfigurationManager.GetSetting("StorageConnectionString");
-            this.storageAccount = CloudStorageAccount.Parse(azureConnectionString);
-            this.blobClient = this.storageAccount.CreateCloudBlobClient();
+            _storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+            _blobClient = _storageAccount.CreateCloudBlobClient();
         }
         public AzureServerPackageRepository(IPackageLocator packageLocator, 
                                             IAzurePackageSerializer packageSerializer,
                                             CloudStorageAccount storageAccount)
         {
-            this.packageLocator = packageLocator;
-            this.packageSerializer = packageSerializer;
+            _packageLocator = packageLocator;
+            _packageSerializer = packageSerializer;
 
-            this.storageAccount = storageAccount;
-            this.blobClient = this.storageAccount.CreateCloudBlobClient();
+            _storageAccount = storageAccount;
+            _blobClient = _storageAccount.CreateCloudBlobClient();
         }
 
         /// <summary>
@@ -91,9 +91,9 @@
         /// <exception cref="System.NotImplementedException"></exception>
         public IQueryable<IPackage> Search(string searchTerm, IEnumerable<string> targetFrameworks, bool allowPrereleaseVersions)
         {
-            var packages = this.GetPackages().ToList();
+            var packages = GetPackages().ToList();
             return 
-                this.GetPackages()
+                GetPackages()
                 .Find(searchTerm)
                 .FilterByPrerelease(allowPrereleaseVersions)
                 .Where(p => p.Listed)
@@ -106,30 +106,29 @@
         /// <param name="package">The package.</param>
         public void AddPackage(IPackage package)
         {
-            var name = this.packageLocator.GetContainerName(package);
-            var container = this.blobClient.GetContainerReference(name);
+            var name = _packageLocator.GetContainerName(package);
+            var container = _blobClient.GetContainerReference(name);
 
             var exists = !container.CreateIfNotExists();
 
-            this.UpdateContainerMetadata(package, container, exists);
+            UpdateContainerMetadata(package, container, exists);
 
             var blobName = package.Version.ToString();
 
-            // this.packageLocator.GetItemName(package);
+            // packageLocator.GetItemName(package);
             var blob = container.GetBlockBlobReference(blobName);
             blob.UploadFromStream(package.GetStream());
-            this.UpdateBlobMetadata(package, blob);
+            UpdateBlobMetadata(package, blob);
         }
 
         /// <summary>
         /// Gets the packages.
         /// </summary>
-        /// <returns></returns>
         public IQueryable<IPackage> GetPackages()
         {
-            return this.blobClient
+            return _blobClient
                 .ListContainers(NsasConstants.ContainerPrefix)
-                .Select(x => this.packageSerializer.ReadFromMetadata(this.GetLatestBlob(x)))
+                .Select(x => _packageSerializer.ReadFromMetadata(GetLatestBlob(x)))
                 .AsQueryable<IPackage>();
         }
 
@@ -139,12 +138,12 @@
         /// <param name="package">The package.</param>
         public void RemovePackage(IPackage package)
         {
-            var name = this.packageLocator.GetContainerName(package);
-            var container = this.blobClient.GetContainerReference(name);
+            var name = _packageLocator.GetContainerName(package);
+            var container = _blobClient.GetContainerReference(name);
 
             if (container.Exists())
             {
-                var blobName = this.packageLocator.GetItemName(package);
+                var blobName = _packageLocator.GetItemName(package);
                 var blob = container.GetBlockBlobReference(blobName);
                 blob.DeleteIfExists();
             }
@@ -157,7 +156,7 @@
         /// <param name="version">The version.</param>
         public void RemovePackage(string packageId, SemanticVersion version)
         {
-            this.RemovePackage(new AzurePackage
+            RemovePackage(new AzurePackage
             {
                 Id = packageId,
                 Version = version,
@@ -220,7 +219,7 @@
             blob.Metadata[Constants.LatestModificationDate] = DateTimeOffset.Now.ToString();
             var azurePackage = Mapper.Map<AzurePackage>(package);
             //blob.Metadata[AzurePropertiesConstants.Package] = JsonConvert.SerializeObject(azurePackage);
-            this.packageSerializer.SaveToMetadata(azurePackage, blob);
+            _packageSerializer.SaveToMetadata(azurePackage, blob);
             blob.SetMetadata();
         }
 
