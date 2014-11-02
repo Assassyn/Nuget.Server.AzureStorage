@@ -131,6 +131,8 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="TestFiles\angularjs.1.2.25.nupkg" />
+    <None Include="TestFiles\angularjs.1.2.26.nupkg" />
+    <None Include="TestFiles\angularjs.1.3.0.nupkg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nuget.Server.AzureStorage\Nuget.Server.AzureStorage.csproj">
