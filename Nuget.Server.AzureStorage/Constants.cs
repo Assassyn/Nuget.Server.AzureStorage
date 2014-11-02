@@ -13,7 +13,6 @@
         public const string PackageId = "PackageId";
     }
 
-
     public static class PkgConsts
     {
         public const string Id = "Id";
@@ -44,7 +43,6 @@
         public const string PackageAssemblyReferences = "PackageAssemblyReferences";
         public const string AssemblyReferences = "AssemblyReferences";
     }
-
 
     public static class NsasConstants
     {

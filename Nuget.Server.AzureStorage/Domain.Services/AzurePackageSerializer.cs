@@ -91,8 +91,8 @@ namespace Nuget.Server.AzureStorage.Domain.Services
                 .ToList();
 
             package.AssemblyReferences = blob.Metadata[PkgConsts.AssemblyReferences]
-                .FromJson<IEnumerable<AzureAssemblyReference>>()
-                .Select(x => x.GetAssemblyReference())
+                .FromJson<IEnumerable<AzureDtoAssemblyReference>>()
+                .Select(x => x.GetAzureAssemblyReference())
                 .ToList();
 
 
@@ -167,6 +167,9 @@ namespace Nuget.Server.AzureStorage.Domain.Services
                 .ToJson();
             blob.Metadata[PkgConsts.PackageAssemblyReferences] = package.PackageAssemblyReferences
                 .Select(x=>new AzurePackageReferenceSet(x))
+                .ToJson();
+            blob.Metadata[PkgConsts.AssemblyReferences] = package.AssemblyReferences
+                .Select(x => new AzureDtoAssemblyReference(x))
                 .ToJson();
             blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
 
