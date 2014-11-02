@@ -1,4 +1,6 @@
-﻿namespace Nuget.Server.AzureStorage.Domain.Services
+﻿using System.Collections.ObjectModel;
+
+namespace Nuget.Server.AzureStorage.Domain.Services
 {
     using AutoMapper;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -73,10 +75,14 @@
                 package.Tags = blob.Metadata[PkgConsts.Tags];
             }
             var dependencySetContent = blob.Metadata[PkgConsts.Dependencies];
-            dependencySetContent = this.Base64Decode(dependencySetContent);
+            dependencySetContent = Base64Decode(dependencySetContent);
             package.DependencySets = dependencySetContent
                 .FromJson<IEnumerable<AzurePackageDependencySet>>()
                 .Select(x => new PackageDependencySet(x.TargetFramework, x.Dependencies));
+
+            package.FrameworkAssemblies = blob.Metadata[PkgConsts.FrameworkAssemblies].FromJson<IEnumerable<FrameworkAssemblyReference>>();
+            package.PackageAssemblyReferences = blob.Metadata[PkgConsts.PackageAssemblyReferences].FromJson<Collection<PackageReferenceSet>>();
+
             package.IsAbsoluteLatestVersion = blob.Metadata[PkgConsts.IsAbsoluteLatestVersion].ToBool();
             package.IsLatestVersion = blob.Metadata[PkgConsts.IsLatestVersion].ToBool();
             if (blob.Metadata.ContainsKey(PkgConsts.MinClientVersion))
@@ -142,7 +148,11 @@
                 blob.Metadata[PkgConsts.ReportAbuseUrl] = package.ReportAbuseUrl.ToString();
             }
             blob.Metadata[PkgConsts.DownloadCount] = package.DownloadCount.ToString();
+
+            blob.Metadata[PkgConsts.FrameworkAssemblies] = package.FrameworkAssemblies.ToJson();
+            blob.Metadata[PkgConsts.PackageAssemblyReferences] = package.PackageAssemblyReferences.ToJson();
             blob.Metadata[PkgConsts.Dependencies] = this.Base64Encode(package.DependencySets.Select(Mapper.Map<AzurePackageDependencySet>).ToJson());
+
             blob.Metadata[PkgConsts.IsAbsoluteLatestVersion] = package.IsAbsoluteLatestVersion.ToString();
             blob.Metadata[PkgConsts.IsLatestVersion] = package.IsLatestVersion.ToString();
             if (package.MinClientVersion != null)

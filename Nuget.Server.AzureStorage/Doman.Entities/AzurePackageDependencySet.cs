@@ -6,7 +6,7 @@
     using System.Runtime.Versioning;
     using System.Linq;
 
-    internal sealed class AzurePackageDependencySet
+    public class AzurePackageDependencySet
     {
         [JsonIgnore]
         public ICollection<PackageDependency> Dependencies

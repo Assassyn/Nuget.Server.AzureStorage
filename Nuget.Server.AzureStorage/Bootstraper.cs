@@ -20,7 +20,10 @@
         public static void SetUpMapper()
         {
             Mapper.CreateMap<IPackage, AzurePackage>();
-            Mapper.CreateMap<PackageDependencySet, AzurePackageDependencySet>();
+            Mapper.CreateMap<PackageDependencySet, AzurePackageDependencySet>()
+                .ForMember(x => x.SeriazlizableDependencies, opt => opt.Ignore())
+                .ForMember(x => x.SeriazlizableSupportedFrameworks, opt => opt.Ignore())
+                .ForMember(x => x.SeriazlizableTargetFramework, opt => opt.Ignore());
         }
     }
 }

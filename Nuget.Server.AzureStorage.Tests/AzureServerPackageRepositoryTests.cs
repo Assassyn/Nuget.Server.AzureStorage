@@ -25,6 +25,7 @@ namespace NugetServer.AzureStorage.Tests
         public void SetUp()
         {
             Bootstraper.SetUpMapper();
+
             Mapper.CreateMap<TestPackage, AzurePackage>();
             _storageAccount = CloudStorageAccount.Parse("UseDevelopmentStorage=true;");
             _storageAccount.DeleteAllBlobContainers(NsasConstants.ContainerPrefix);
