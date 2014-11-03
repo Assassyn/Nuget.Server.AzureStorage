@@ -1,4 +1,6 @@
-﻿namespace Nuget.Server.AzureStorage
+﻿using System.Data.SqlClient;
+
+namespace Nuget.Server.AzureStorage
 {
     using AutoMapper;
     using Microsoft.WindowsAzure;
@@ -119,6 +121,28 @@
             var blob = container.GetBlockBlobReference(blobName);
             blob.UploadFromStream(package.GetStream());
             UpdateBlobMetadata(package, blob);
+
+            UpdateLatestVersionFlags(container);
+        }
+
+        private void UpdateLatestVersionFlags(CloudBlobContainer container)
+        {
+            var blobsWithMetadata = container.ListBlobs().OfType<CloudBlockBlob>().Select(x => new
+            {
+                Blob = x,
+                Metadata = _packageSerializer.ReadFromMetadata(x)
+            }).ToList();
+
+            foreach (var blobWithMetadata in blobsWithMetadata)
+                blobWithMetadata.Metadata.IsLatestVersion = false;
+
+            var latest = blobsWithMetadata.OrderBy(x => x.Metadata.Version).Reverse().First();
+            latest.Metadata.IsLatestVersion = true;
+            latest.Metadata.IsAbsoluteLatestVersion = true;
+
+            foreach (var blobWithMetadata in blobsWithMetadata) 
+                _packageSerializer.SaveToMetadata(blobWithMetadata.Metadata,blobWithMetadata.Blob);
+
         }
 
         /// <summary>
@@ -128,7 +152,10 @@
         {
             return _blobClient
                 .ListContainers(NsasConstants.ContainerPrefix)
-                .Select(x => _packageSerializer.ReadFromMetadata(GetLatestBlob(x)))
+                .Select(x => x.ListBlobs())
+                .SelectMany(x => x)
+                .OfType<CloudBlockBlob>()
+                .Select(x => _packageSerializer.ReadFromMetadata(x))
                 .AsQueryable<IPackage>();
         }
 

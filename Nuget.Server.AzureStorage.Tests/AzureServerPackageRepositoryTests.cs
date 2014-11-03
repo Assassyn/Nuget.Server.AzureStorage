@@ -119,9 +119,15 @@ namespace NugetServer.AzureStorage.Tests
                 _azureServerPackageRepository.AddPackage(TestPackage.MakePackage("angular","1.2.25",fileStream1225));
                 _azureServerPackageRepository.AddPackage(TestPackage.MakePackage("angular", "1.2.26", fileStream1226));
 
-                var reloadedPackage = _azureServerPackageRepository.GetPackages().ToList();
+                var reloadedPackages = _azureServerPackageRepository.GetPackages().ToList();
 
-                Assert.AreEqual(2, reloadedPackage.Count());
+                Assert.AreEqual(2, reloadedPackages.Count());
+
+                var latestPackage = reloadedPackages.Single(x => x.IsLatestVersion);
+
+                Assert.AreEqual("1.2.26",latestPackage.Version.ToString());
+                Assert.True(latestPackage.IsAbsoluteLatestVersion);
+                Assert.True(latestPackage.IsLatestVersion);
             }
         }
         
@@ -135,6 +141,26 @@ namespace NugetServer.AzureStorage.Tests
 
                 var searchedPackages = _azureServerPackageRepository.Search("", new List<string>(), true);
                 Assert.AreEqual(1,searchedPackages.Count());
+            }
+        }
+
+        [Test]
+        public void Search_TwoVersions_OnePackage_EmptyString()
+        {
+            using (var fileStream1225 = new FileStream("../../TestFiles/angularjs.1.2.25.nupkg", FileMode.Open))
+            using (var fileStream1226 = new FileStream("../../TestFiles/angularjs.1.2.26.nupkg", FileMode.Open))
+            {
+                _azureServerPackageRepository.AddPackage(TestPackage.MakePackage("angular", "1.2.25", fileStream1225));
+                _azureServerPackageRepository.AddPackage(TestPackage.MakePackage("angular", "1.2.26", fileStream1226));
+
+                var packages = _azureServerPackageRepository.Search("  ", new List<string>(), false)
+                    .Where(x => x.IsLatestVersion)
+                    .OrderBy(x => x.Id)
+                    .Skip(0)
+                    .Take(30);
+
+                Assert.AreEqual(1, packages.Count());
+
             }
         }
     }
