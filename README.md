@@ -1,13 +1,19 @@
 Nuget.Server.AzureStorage
 =========================
+# Getting started
 
-The taks of this project is to allow the storage of the nuget packages on the Azure Blob.
+It is recommended that you just use the example project as the starting base of the new NuGet server.
 
-To make it working just include the package to the Nuget Server proejct.
+# Configuration
 
-<b>Configuration</b>
+all settings for the nuget server are in the web config file.  The most important setting is the StorageConnectionString setting.
 
 To configure just add the AppSetting entry like:
 <pre>
 &lt;add key="StorageConnectionString" value="DefaultEndpointsProtocol=https;AccountName=<account name>;AccountKey=<account key>" /&gt;
 </pre>
+
+# Dev SetUp
+1) go download chocolatey
+2) use chocolatey to install the Nuget Command Line interface. this will allow you to use powershell to manually upload and download nuget files for testing
+
