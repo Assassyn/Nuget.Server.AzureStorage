@@ -1,2 +1,2 @@
-".nuget\nuget.exe" pack ".\Sources\Nuget.Server.AzureStorage\Nuget.Server.AzureStorage.csproj"
+".nuget\nuget.exe" pack ".\Nuget.Server.AzureStorage\Nuget.Server.AzureStorage.csproj"
 pause

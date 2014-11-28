@@ -84,9 +84,6 @@
     <Reference Include="NuGet.Server">
       <HintPath>..\packages\NuGet.Server.2.8.3\lib\net40\NuGet.Server.dll</HintPath>
     </Reference>
-    <Reference Include="ObjectSerialization">
-      <HintPath>..\..\packages\ObjectSerialization-Net.1.0.26\lib\net40\ObjectSerialization.dll</HintPath>
-    </Reference>
     <Reference Include="RouteMagic">
       <HintPath>..\packages\RouteMagic.1.2\lib\net40\RouteMagic.dll</HintPath>
     </Reference>
