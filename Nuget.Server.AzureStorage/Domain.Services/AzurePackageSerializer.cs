@@ -9,6 +9,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
     public class AzurePackageSerializer : IAzurePackageSerializer
     {
@@ -49,7 +50,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             }
             if (blob.Metadata.ContainsKey(PkgConsts.Copyright))
             {
-                package.Copyright = blob.Metadata[PkgConsts.Copyright];
+                package.Copyright = Base64Decode(blob.Metadata[PkgConsts.Copyright]);
             }
             if (blob.Metadata.ContainsKey(PkgConsts.ReportAbuseUrl))
             {
@@ -60,15 +61,15 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             package.DevelopmentDependency = blob.Metadata[PkgConsts.DevelopmentDependency].ToBool();
             if (blob.Metadata.ContainsKey(PkgConsts.Description))
             {
-                package.Description = blob.Metadata[PkgConsts.Description];
+                package.Description = Base64Decode(blob.Metadata[PkgConsts.Description]);
             }
             if (blob.Metadata.ContainsKey(PkgConsts.Summary))
             {
-                package.Summary = blob.Metadata[PkgConsts.Summary];
+                package.Summary = Base64Decode(blob.Metadata[PkgConsts.Summary]);
             }
             if (blob.Metadata.ContainsKey(PkgConsts.ReleaseNotes))
             {
-                package.ReleaseNotes = blob.Metadata[PkgConsts.ReleaseNotes];
+                package.ReleaseNotes = Base64Decode(blob.Metadata[PkgConsts.ReleaseNotes]);
             }
             if (blob.Metadata.ContainsKey(PkgConsts.Tags))
             {
@@ -82,12 +83,12 @@ namespace Nuget.Server.AzureStorage.Domain.Services
 
             package.FrameworkAssemblies = blob.Metadata[PkgConsts.FrameworkAssemblies]
                 .FromJson<IEnumerable<AzureFrameworkAssemblyReference>>()
-                .Select(x=>x.GetFrameworkAssemblyReference())
+                .Select(x => x.GetFrameworkAssemblyReference())
                 .ToList();
-            
+
             package.PackageAssemblyReferences = blob.Metadata[PkgConsts.PackageAssemblyReferences]
                 .FromJson<Collection<AzurePackageReferenceSet>>()
-                .Select(x=>x.GetReferenceSet())
+                .Select(x => x.GetReferenceSet())
                 .ToList();
 
             package.AssemblyReferences = blob.Metadata[PkgConsts.AssemblyReferences]
@@ -135,14 +136,14 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             }
             blob.Metadata[PkgConsts.RequireLicenseAcceptance] = package.RequireLicenseAcceptance.ToString();
             blob.Metadata[PkgConsts.DevelopmentDependency] = package.DevelopmentDependency.ToString();
-            blob.Metadata[PkgConsts.Description] = package.Description;
+            blob.Metadata[PkgConsts.Description] = Base64Encode(package.Description);
             if (!string.IsNullOrEmpty(package.Summary))
             {
-                blob.Metadata[PkgConsts.Summary] = package.Summary;
+                blob.Metadata[PkgConsts.Summary] = Base64Encode(package.Summary);
             }
             if (!string.IsNullOrEmpty(package.ReleaseNotes))
             {
-                blob.Metadata[PkgConsts.ReleaseNotes] = package.ReleaseNotes;
+                blob.Metadata[PkgConsts.ReleaseNotes] = Base64Encode(package.ReleaseNotes);
             }
             if (!string.IsNullOrEmpty(package.Tags))
             {
@@ -154,7 +155,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             }
             if (!string.IsNullOrEmpty(package.Copyright))
             {
-                blob.Metadata[PkgConsts.Copyright] = package.Copyright;
+                blob.Metadata[PkgConsts.Copyright] = Base64Encode(package.Copyright);
             }
             if (package.ReportAbuseUrl != null)
             {
@@ -163,10 +164,10 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             blob.Metadata[PkgConsts.DownloadCount] = package.DownloadCount.ToString();
 
             blob.Metadata[PkgConsts.FrameworkAssemblies] = package.FrameworkAssemblies
-                .Select(x=>new AzureFrameworkAssemblyReference(x))
+                .Select(x => new AzureFrameworkAssemblyReference(x))
                 .ToJson();
             blob.Metadata[PkgConsts.PackageAssemblyReferences] = package.PackageAssemblyReferences
-                .Select(x=>new AzurePackageReferenceSet(x))
+                .Select(x => new AzurePackageReferenceSet(x))
                 .ToJson();
             blob.Metadata[PkgConsts.AssemblyReferences] = package.AssemblyReferences
                 .Select(x => new AzureDtoAssemblyReference(x))
@@ -177,7 +178,7 @@ namespace Nuget.Server.AzureStorage.Domain.Services
             blob.Metadata[PkgConsts.IsLatestVersion] = package.IsLatestVersion.ToString();
             if (package.MinClientVersion != null)
             {
-                blob.Metadata[PkgConsts.MinClientVersion] =  package.MinClientVersion.ToString();
+                blob.Metadata[PkgConsts.MinClientVersion] = package.MinClientVersion.ToString();
             }
             if (package.Published != null)
             {
@@ -199,6 +200,6 @@ namespace Nuget.Server.AzureStorage.Domain.Services
         {
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-        }
+        }       
     }
 }

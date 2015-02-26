@@ -46,6 +46,6 @@
 
     public static class NsasConstants
     {
-        public const string ContainerPrefix = "NugetAzure-";
+        public const string ContainerPrefix = "nugetazure-";
     }
 }
