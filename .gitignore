@@ -34,3 +34,4 @@ $RECYCLE.BIN/
 
 *.pubxml
 Nuget.Server.AzureStorage.sln.ide
+/packages

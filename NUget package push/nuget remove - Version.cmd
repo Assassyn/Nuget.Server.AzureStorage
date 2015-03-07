@@ -1,1 +1,0 @@
-nuget delete AraneaIT.Migration.Engine 1.0.10.0 -ApiKey 14122011 -NonInteractive -Source http://localhost:59953/
