@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget.Server.AzureStorage.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget.Server.TestInstance", "Sources\Nuget.Server.TestInstance\Nuget.Server.TestInstance.csproj", "{34193A96-5D22-426F-B35B-77AFA36123A9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", "{DA0F559D-1693-4778-B691-C2EF6E2F9FBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
