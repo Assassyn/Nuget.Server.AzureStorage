@@ -112,6 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzurePackageService.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="AzureServerPackageRepository .cs" />
     <Compile Include="Bootstraper.cs" />
