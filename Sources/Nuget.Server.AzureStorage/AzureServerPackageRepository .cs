@@ -59,8 +59,19 @@ namespace Nuget.Server.AzureStorage
         /// <returns></returns>
         public Package GetMetadataPackage(IPackage package)
         {
+            var derived = new DerivedPackageData() {
+                //Created = ?
+                //FullPath = ?
+                IsAbsoluteLatestVersion = package.IsAbsoluteLatestVersion,
+                IsLatestVersion = package.IsLatestVersion
+                //LastUpdated = ?
+                //PackageHash = package.GetHash(),
+                //PackageSize = ??
+                //Path = ??
+                //SupportedFrameworks = package.GetSupportedFrameworks(),
+            };
             //var pkg = new Package(package, new DerivedPackageData());
-            return new Package(package, new DerivedPackageData());
+            return new Package(package, derived);
         }
 
         /// <summary>
@@ -261,6 +272,41 @@ namespace Nuget.Server.AzureStorage
             var latest = container.Metadata[Constants.LastUploadedVersion];
 
             return container.GetBlockBlobReference(latest);
+        }
+
+        /// <summary>
+        /// Gets the package blob.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        public CloudBlockBlob GetBlob(IPackage package)
+        {
+            var name = _packageLocator.GetContainerName(package);
+            var container = _blobClient.GetContainerReference(name);
+
+            if (container.Exists())
+            {
+                var blobName = _packageLocator.GetItemName(package);
+                var blob = container.GetBlockBlobReference(blobName);
+                return blob;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the package blob.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="version">The version.</param>
+        public CloudBlockBlob GetBlob(string packageId, SemanticVersion version)
+        {
+            return GetBlob(new AzurePackage
+            {
+                Id = packageId,
+                Version = version,
+            });
         }
     }
 }
